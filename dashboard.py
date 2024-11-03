@@ -13,6 +13,7 @@ cloudwatch_client = boto3.client('cloudwatch', region_name='ap-southeast-1')
 ec2_client = boto3.client('ec2', region_name='ap-southeast-1')
 rds_client = boto3.client('rds', region_name='ap-southeast-1')
 ecs_client = boto3.client('ecs', region_name='ap-southeast-1')
+autoscaling_client = boto3.client('autoscaling', region_name='ap-southeast-1')  # Auto Scaling client
 
 # Global flag for monitoring status
 monitoring_flag = False
@@ -71,54 +72,101 @@ def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_conne
     }
 
     # EC2 Scaling Logic
-    if ec2_cpu > 75 or ec2_memory > 75:
-        actions["EC2"] = "scale_up"
-    elif ec2_cpu < 30 and ec2_memory < 30 and ec2_disk_read < 100 and ec2_disk_write < 100:
-        actions["EC2"] = "scale_down"
+    if ec2_cpu is not None and ec2_memory is not None:
+        if ec2_cpu > 75 or ec2_memory > 75:
+            actions["EC2"] = "scale_up"
+        elif (ec2_cpu < 30 and ec2_memory < 30 and
+              ec2_disk_read is not None and ec2_disk_write is not None and
+              ec2_disk_read < 100 and ec2_disk_write < 100):
+            actions["EC2"] = "scale_down"
 
     # RDS Scaling Logic
-    if rds_cpu > 80 or rds_memory < 25:  # Assuming threshold for RDS freeable memory at 25%
-        actions["RDS"] = "scale_up"
-    elif rds_cpu < 40 and rds_memory > 60 and rds_connections < 100:
-        actions["RDS"] = "scale_down"
+    if rds_cpu is not None and rds_memory is not None:
+        if rds_cpu > 80 or rds_memory < 25:  # Assuming threshold for RDS freeable memory at 25%
+            actions["RDS"] = "scale_up"
+        elif (rds_cpu < 40 and rds_memory > 60 and rds_connections is not None and
+              rds_connections < 100):
+            actions["RDS"] = "scale_down"
 
     # ECS Scaling Logic
-    if ecs_cpu > 70 or ecs_memory > 70:
-        actions["ECS"] = "scale_up"
-    elif ecs_cpu < 30 and ecs_memory < 30:
-        actions["ECS"] = "scale_down"
+    if ecs_cpu is not None and ecs_memory is not None:
+        if ecs_cpu > 70 or ecs_memory > 70:
+            actions["ECS"] = "scale_up"
+        elif ecs_cpu < 30 and ecs_memory < 30:
+            actions["ECS"] = "scale_down"
 
     return actions
 
 # Function to apply scaling action using AWS SDK
 def apply_scaling_action(actions):
     for service, action in actions.items():
+        if action == "no_action":
+            continue  # Skip if no scaling is required
+
         if service == "EC2":
-            instance_id = "<your_ec2_instance_id>"  # Replace with actual EC2 instance ID
-            if action == "scale_up":
-                ec2_client.start_instances(InstanceIds=[instance_id])
-                print(f"Scaled up EC2 instance: {instance_id}")
-            elif action == "scale_down":
-                ec2_client.stop_instances(InstanceIds=[instance_id])
-                print(f"Scaled down EC2 instance: {instance_id}")
+            instance_id = "i-0161c9ed927d94b4e"  # Replace with actual EC2 instance ID
+            asg_name = "ec2-scaling"  # Replace with Auto Scaling Group name if applicable
+            
+            # EC2 Scaling with Auto Scaling Group
+            if asg_name:  # Check if Auto Scaling Group is used
+                if action == "scale_up":
+                    autoscaling_client.update_auto_scaling_group(
+                        AutoScalingGroupName=asg_name,
+                        DesiredCapacity=2  # Adjust this based on your scaling needs
+                    )
+                    print(f"Scaled up EC2 instances in Auto Scaling Group: {asg_name}")
+                elif action == "scale_down":
+                    autoscaling_client.update_auto_scaling_group(
+                        AutoScalingGroupName=asg_name,
+                        DesiredCapacity=1  # Minimum or reduced instance count
+                    )
+                    print(f"Scaled down EC2 instances in Auto Scaling Group: {asg_name}")
+            
+            # EC2 Individual Instance Scaling by Instance Type (if not in ASG)
+            else:
+                if action == "scale_up":
+                    ec2_client.modify_instance_attribute(
+                        InstanceId=instance_id,
+                        Attribute='instanceType',
+                        Value='t3.large'  # Scale to larger instance type as an example
+                    )
+                    ec2_client.start_instances(InstanceIds=[instance_id])
+                    print(f"Upgraded EC2 instance type to t3.large and started instance: {instance_id}")
+                elif action == "scale_down":
+                    ec2_client.stop_instances(InstanceIds=[instance_id])
+                    print(f"Stopped EC2 instance: {instance_id}")
 
         elif service == "RDS":
-            db_instance_identifier = "<your_rds_instance_id>"  # Replace with actual RDS instance identifier
+            db_instance_identifier = "database-1"  # Replace with actual RDS instance identifier
             if action == "scale_up":
-                rds_client.modify_db_instance(DBInstanceIdentifier=db_instance_identifier, AllocatedStorage=20)  # Example
+                rds_client.modify_db_instance(
+                    DBInstanceIdentifier=db_instance_identifier,
+                    DBInstanceClass="db.t3.small"  # Example of scaling up , adjust as needed
+                )
                 print(f"Scaled up RDS instance: {db_instance_identifier}")
             elif action == "scale_down":
-                rds_client.modify_db_instance(DBInstanceIdentifier=db_instance_identifier, AllocatedStorage=10)  # Example
+                rds_client.modify_db_instance(
+                    DBInstanceIdentifier=db_instance_identifier,
+                    DBInstanceClass="db.t3.micro"  # Example of scaling down 
+                )
                 print(f"Scaled down RDS instance: {db_instance_identifier}")
 
         elif service == "ECS":
-            cluster_name = "<your_ecs_cluster_name>"  # Replace with ECS cluster name
-            service_name = "<your_ecs_service_name>"  # Replace with ECS service name
+            cluster_name = "testCLuster1"  # Replace with ECS cluster name
+            service_name = "nginx-service"  # Replace with ECS service name
             if action == "scale_up":
-                ecs_client.update_service(cluster=cluster_name, service=service_name, desiredCount=2)  # Example increase
+                ecs_client.update_service(
+                    cluster=cluster_name,
+                    service=service_name,
+                    desiredCount=2  # Increase task count
+                )
                 print(f"Scaled up ECS service: {service_name}")
             elif action == "scale_down":
-                ecs_client.update_service(cluster=cluster_name, service=service_name, desiredCount=1)  # Example decrease
+                ecs_client.update_service(
+                    cluster=cluster_name,
+                    service=service_name,
+                    desiredCount=1  # Decrease task count
+                )
                 print(f"Scaled down ECS service: {service_name}")
 
 # Continuous monitoring and scaling loop
@@ -135,8 +183,8 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
         cpu_utilization_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='CPUUtilization', dimension_name='DBInstanceIdentifier')
         freeable_memory_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='FreeableMemory', dimension_name='DBInstanceIdentifier')
 
-        cpu_utilization_ecs = get_cloudwatch_metrics(instance_id=ecs_service_name, namespace='AWS/ECS', metric_name='CPUUtilization', dimension_name='ServiceName')
-        memory_utilization_ecs = get_cloudwatch_metrics(instance_id=ecs_service_name, namespace='AWS/ECS', metric_name='MemoryUtilization', dimension_name='ServiceName')
+        cpu_utilization_ecs = get_cloudwatch_metrics(instance_id=ecs_service_name, namespace='ECS/ContainerInsights', metric_name='CPUUtilization', dimension_name='ServiceName')
+        memory_utilization_ecs = get_cloudwatch_metrics(instance_id=ecs_service_name, namespace='ECS/ContainerInsights', metric_name='MemoryUtilization', dimension_name='ServiceName')
 
         # Save metrics to database
         if cpu_utilization_ec2 is not None:
