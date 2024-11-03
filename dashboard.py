@@ -1,45 +1,49 @@
 import boto3
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import sqlite3
 import threading
 import time
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import time
+import pytz  # Import pytz for timezone handling
 
 # Initialize AWS CloudWatch and EC2 clients
 cloudwatch_client = boto3.client('cloudwatch', region_name='ap-southeast-1')
 ec2_client = boto3.client('ec2', region_name='ap-southeast-1')
+rds_client = boto3.client('rds', region_name='ap-southeast-1')
+ecs_client = boto3.client('ecs', region_name='ap-southeast-1')
 
 # Global flag for monitoring status
 monitoring_flag = False
+
+# Set the timezone to Asia/Colombo
+colombo_tz = pytz.timezone('Asia/Colombo')
 
 # Function to create the metrics table if it doesn't exist
 def create_metrics_table():
     with sqlite3.connect('cloud_metrics.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS metrics (
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                service TEXT,
-                instance_id TEXT,
-                metric_name TEXT,
-                metric_value REAL
-            )
-        ''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS metrics (
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            service TEXT,
+            instance_id TEXT,
+            metric_name TEXT,
+            metric_value REAL
+        )''')
         conn.commit()
 
 # Function to get CloudWatch metrics for a specific instance and metric
 def get_cloudwatch_metrics(instance_id, namespace, metric_name, dimension_name='InstanceId'):
+    now_colombo = datetime.now(colombo_tz)
+    start_time = now_colombo - timedelta(minutes=10)
+    
     response = cloudwatch_client.get_metric_statistics(
         Namespace=namespace,
         MetricName=metric_name,
-        Dimensions=[
-            {'Name': dimension_name, 'Value': instance_id}
-        ],
-        StartTime=datetime.now(timezone.utc) - timedelta(minutes=10),
-        EndTime=datetime.now(timezone.utc),
+        Dimensions=[{'Name': dimension_name, 'Value': instance_id}],
+        StartTime=start_time,
+        EndTime=now_colombo,
         Period=300,  # 5-minute intervals
         Statistics=['Average']
     )
@@ -53,29 +57,69 @@ def get_cloudwatch_metrics(instance_id, namespace, metric_name, dimension_name='
 def save_metrics(service, instance_id, metric_name, metric_value):
     with sqlite3.connect('cloud_metrics.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO metrics (service, instance_id, metric_name, metric_value)
-            VALUES (?, ?, ?, ?)
-        ''', (service, instance_id, metric_name, metric_value))
+        cursor.execute('''INSERT INTO metrics (service, instance_id, metric_name, metric_value)
+                          VALUES (?, ?, ?, ?)''', (service, instance_id, metric_name, metric_value))
         conn.commit()
 
 # Enhanced threshold-based decision-making function for scaling
 def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_connections, rds_cpu, rds_memory, ecs_cpu, ecs_memory):
-    if ec2_cpu > 75 or rds_cpu > 80 or ecs_cpu > 70:
-        return 'scale_up'
-    elif ec2_cpu < 30 and rds_cpu < 40 and ecs_cpu < 30 and rds_connections < 100:
-        return 'scale_down'
-    else:
-        return 'no_action'
+    # Initialize actions for each service
+    actions = {
+        "EC2": "no_action",
+        "RDS": "no_action",
+        "ECS": "no_action"
+    }
 
-# Function to apply scaling action using the AWS API
-def apply_scaling_action(instance_id, action):
-    if action == 'scale_up':
-        ec2_client.start_instances(InstanceIds=[instance_id])
-        print("Scaled up EC2 instance:", instance_id)
-    elif action == 'scale_down':
-        ec2_client.stop_instances(InstanceIds=[instance_id])
-        print("Scaled down EC2 instance:", instance_id)
+    # EC2 Scaling Logic
+    if ec2_cpu > 75 or ec2_memory > 75:
+        actions["EC2"] = "scale_up"
+    elif ec2_cpu < 30 and ec2_memory < 30 and ec2_disk_read < 100 and ec2_disk_write < 100:
+        actions["EC2"] = "scale_down"
+
+    # RDS Scaling Logic
+    if rds_cpu > 80 or rds_memory < 25:  # Assuming threshold for RDS freeable memory at 25%
+        actions["RDS"] = "scale_up"
+    elif rds_cpu < 40 and rds_memory > 60 and rds_connections < 100:
+        actions["RDS"] = "scale_down"
+
+    # ECS Scaling Logic
+    if ecs_cpu > 70 or ecs_memory > 70:
+        actions["ECS"] = "scale_up"
+    elif ecs_cpu < 30 and ecs_memory < 30:
+        actions["ECS"] = "scale_down"
+
+    return actions
+
+# Function to apply scaling action using AWS SDK
+def apply_scaling_action(actions):
+    for service, action in actions.items():
+        if service == "EC2":
+            instance_id = "<your_ec2_instance_id>"  # Replace with actual EC2 instance ID
+            if action == "scale_up":
+                ec2_client.start_instances(InstanceIds=[instance_id])
+                print(f"Scaled up EC2 instance: {instance_id}")
+            elif action == "scale_down":
+                ec2_client.stop_instances(InstanceIds=[instance_id])
+                print(f"Scaled down EC2 instance: {instance_id}")
+
+        elif service == "RDS":
+            db_instance_identifier = "<your_rds_instance_id>"  # Replace with actual RDS instance identifier
+            if action == "scale_up":
+                rds_client.modify_db_instance(DBInstanceIdentifier=db_instance_identifier, AllocatedStorage=20)  # Example
+                print(f"Scaled up RDS instance: {db_instance_identifier}")
+            elif action == "scale_down":
+                rds_client.modify_db_instance(DBInstanceIdentifier=db_instance_identifier, AllocatedStorage=10)  # Example
+                print(f"Scaled down RDS instance: {db_instance_identifier}")
+
+        elif service == "ECS":
+            cluster_name = "<your_ecs_cluster_name>"  # Replace with ECS cluster name
+            service_name = "<your_ecs_service_name>"  # Replace with ECS service name
+            if action == "scale_up":
+                ecs_client.update_service(cluster=cluster_name, service=service_name, desiredCount=2)  # Example increase
+                print(f"Scaled up ECS service: {service_name}")
+            elif action == "scale_down":
+                ecs_client.update_service(cluster=cluster_name, service=service_name, desiredCount=1)  # Example decrease
+                print(f"Scaled down ECS service: {service_name}")
 
 # Continuous monitoring and scaling loop
 def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
@@ -123,9 +167,10 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
 st.title("AWS Cloud Resource Monitoring Dashboard")
 create_metrics_table()
 
-# Define placeholders
-table_placeholder = st.empty()
-graphs_placeholder = st.empty()
+# Define placeholders for each service
+ec2_placeholder = st.empty()
+rds_placeholder = st.empty()
+ecs_placeholder = st.empty()
 
 def start_monitoring():
     global monitoring_flag
@@ -137,12 +182,13 @@ def stop_monitoring():
     global monitoring_flag
     monitoring_flag = False
 
-# Start/Stop Monitoring Buttons
-if st.button("Start Monitoring") and not monitoring_flag:
+# Fixed buttons at the top of the page
+st.sidebar.title("Control Panel")
+if st.sidebar.button("Start Monitoring") and not monitoring_flag:
     start_monitoring()
-elif st.button("Stop Monitoring") and monitoring_flag:
+    time.sleep(10)  # Delay loading graphs by 10 seconds
+elif st.sidebar.button("Stop Monitoring") and monitoring_flag:
     stop_monitoring()
-
 
 # Function to fetch data from the database
 def fetch_data():
@@ -151,29 +197,38 @@ def fetch_data():
     conn.close()
     return df
 
-# Function to update the table in real-time
-def update_table():
-    df = fetch_data()
-    with table_placeholder:
-        st.subheader("Metrics Table")
-        st.write(df)
-
-# Continuous update for table and graphs
+# Continuous update for graphs only
 while monitoring_flag:
-    conn = sqlite3.connect('cloud_metrics.db')
-    df = pd.read_sql_query("SELECT * FROM metrics ORDER BY timestamp DESC LIMIT 100", conn)
-    conn.close()
+    df = fetch_data()
     
-    # Update table
-    table_placeholder.write(df)
-    
-    # Update graphs
-    with graphs_placeholder:
-        st.subheader("Metrics Graphs")
-        for metric_name in df['metric_name'].unique():
-            metric_df = df[df['metric_name'] == metric_name]
-            fig = px.line(metric_df, x="timestamp", y="metric_value", title=metric_name)
-            unique_key = f"plot_{metric_name}_{int(time.time() * 1000)}"  # Unique key with timestamp
-            st.plotly_chart(fig, key=unique_key)
-    
-    time.sleep(5)  # Update every 5 seconds
+    # Update EC2 graphs
+    with ec2_placeholder:
+        st.subheader("EC2 Metrics")
+        for metric_name in ['CPUUtilization', 'DiskReadOps', 'DiskWriteOps', 'MemoryUsage']:
+            metric_df = df[(df['service'] == 'EC2') & (df['metric_name'] == metric_name)]
+            if not metric_df.empty:
+                fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"EC2 {metric_name}")
+                unique_key = f"ec2_{metric_name}_{time.time()}"
+                st.plotly_chart(fig, key=unique_key)
+
+    # Update RDS graphs
+    with rds_placeholder:
+        st.subheader("RDS Metrics")
+        for metric_name in ['DatabaseConnections', 'CPUUtilization', 'FreeableMemory']:
+            metric_df = df[(df['service'] == 'RDS') & (df['metric_name'] == metric_name)]
+            if not metric_df.empty:
+                fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"RDS {metric_name}")
+                unique_key = f"rds_{metric_name}_{time.time()}"
+                st.plotly_chart(fig, key=unique_key)
+
+    # Update ECS graphs
+    with ecs_placeholder:
+        st.subheader("ECS Metrics")
+        for metric_name in ['CPUUtilization', 'MemoryUtilization']:
+            metric_df = df[(df['service'] == 'ECS') & (df['metric_name'] == metric_name)]
+            if not metric_df.empty:
+                fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"ECS {metric_name}")
+                unique_key = f"ecs_{metric_name}_{time.time()}"
+                st.plotly_chart(fig, key=unique_key)
+
+    time.sleep(300)  # Refresh every 5 minutes
