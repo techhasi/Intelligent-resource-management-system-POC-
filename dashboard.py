@@ -208,7 +208,7 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
 
         # Scale decision and action
         decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs)
-        apply_scaling_action(instance_id, decision)
+        apply_scaling_action(decision)
         time.sleep(300)  # Refresh every 5 minutes
 
 # Streamlit Dashboard
