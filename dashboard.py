@@ -53,6 +53,29 @@ def get_cloudwatch_metrics(instance_id, namespace, metric_name, dimension_name='
         return data_points[0]['Average']
     else:
         return None
+    
+    # Function to get ECS metrics
+def get_ecs_metrics(service_name, cluster_name, metric_name):
+    now_colombo = datetime.now(colombo_tz)
+    start_time = now_colombo - timedelta(minutes=10)
+    
+    response = cloudwatch_client.get_metric_statistics(
+        Namespace='AWS/ECS',
+        MetricName=metric_name,
+        Dimensions=[
+            {'Name': 'ClusterName', 'Value': cluster_name},
+            {'Name': 'ServiceName', 'Value': service_name}
+        ],
+        StartTime=start_time,
+        EndTime=now_colombo,
+        Period=300,  # 5-minute intervals
+        Statistics=['Average']
+    )
+    data_points = response['Datapoints']
+    if data_points:
+        return data_points[0]['Average']
+    else:
+        return None
 
 # Function to save metrics to the database
 def save_metrics(service, instance_id, metric_name, metric_value):
@@ -170,7 +193,7 @@ def apply_scaling_action(actions):
                 print(f"Scaled down ECS service: {service_name}")
 
 # Continuous monitoring and scaling loop
-def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
+def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluster_name):
     global monitoring_flag
     while monitoring_flag:
         # Collect metrics for EC2, RDS, and ECS
@@ -183,8 +206,9 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
         cpu_utilization_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='CPUUtilization', dimension_name='DBInstanceIdentifier')
         freeable_memory_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='FreeableMemory', dimension_name='DBInstanceIdentifier')
 
-        cpu_utilization_ecs = get_cloudwatch_metrics(instance_id=ecs_service_name, namespace='ECS/ContainerInsights', metric_name='CPUUtilization', dimension_name='ServiceName')
-        memory_utilization_ecs = get_cloudwatch_metrics(instance_id=ecs_service_name, namespace='ECS/ContainerInsights', metric_name='MemoryUtilization', dimension_name='ServiceName')
+        cpu_utilization_ecs = get_ecs_metrics(ecs_service_name, ecs_cluster_name, 'CPUUtilization')
+        memory_utilization_ecs = get_ecs_metrics(ecs_service_name, ecs_cluster_name, 'MemoryUtilization')
+        running_task_count_ecs = get_ecs_metrics(ecs_service_name, ecs_cluster_name, 'RunningTaskCount')
 
         # Save metrics to database
         if cpu_utilization_ec2 is not None:
@@ -205,9 +229,12 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name):
             save_metrics('ECS', ecs_service_name, 'CPUUtilization', cpu_utilization_ecs)
         if memory_utilization_ecs is not None:
             save_metrics('ECS', ecs_service_name, 'MemoryUtilization', memory_utilization_ecs)
+        if running_task_count_ecs is not None:
+            save_metrics('ECS', ecs_service_name, 'RunningTaskCount', running_task_count_ecs)
+
 
         # Scale decision and action
-        decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs)
+        decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs, running_task_count_ecs)
         apply_scaling_action(decision)
         time.sleep(300)  # Refresh every 5 minutes
 
@@ -223,7 +250,7 @@ ecs_placeholder = st.empty()
 def start_monitoring():
     global monitoring_flag
     monitoring_flag = True
-    monitor_thread = threading.Thread(target=monitor_and_scale, args=('i-0161c9ed927d94b4e', 'database-1', 'nginx-service'))
+    monitor_thread = threading.Thread(target=monitor_and_scale, args=('i-0161c9ed927d94b4e', 'database-1', 'nginx-service', 'testCluster1'))
     monitor_thread.start()
 
 def stop_monitoring():
