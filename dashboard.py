@@ -18,6 +18,9 @@ autoscaling_client = boto3.client('autoscaling', region_name='ap-southeast-1')  
 # Global flag for monitoring status
 monitoring_flag = False
 
+# Global variable to store the latest scaling decision
+latest_scaling_decision = ""
+
 # Set the timezone to Asia/Colombo
 colombo_tz = pytz.timezone('Asia/Colombo')
 
@@ -98,9 +101,7 @@ def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_conne
     if ec2_cpu is not None and ec2_memory is not None:
         if ec2_cpu > 75 or ec2_memory > 75:
             actions["EC2"] = "scale_up"
-        elif (ec2_cpu < 30 and ec2_memory < 30 and
-              ec2_disk_read is not None and ec2_disk_write is not None and
-              ec2_disk_read < 100 and ec2_disk_write < 100):
+        elif (ec2_cpu < 30 or ec2_memory < 30):
             actions["EC2"] = "scale_down"
 
     # RDS Scaling Logic
@@ -122,6 +123,8 @@ def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_conne
 
 # Function to apply scaling action using AWS SDK
 def apply_scaling_action(actions):
+    global latest_scaling_decision  # Access the global variable to store the latest decision
+
     for service, action in actions.items():
         if action == "no_action":
             continue  # Skip if no scaling is required
@@ -132,47 +135,39 @@ def apply_scaling_action(actions):
             
             # EC2 Scaling with Auto Scaling Group
             if asg_name:  # Check if Auto Scaling Group is used
-                if action == "scale_up":
-                    autoscaling_client.update_auto_scaling_group(
-                        AutoScalingGroupName=asg_name,
-                        DesiredCapacity=2  # Adjust this based on your scaling needs
-                    )
-                    print(f"Scaled up EC2 instances in Auto Scaling Group: {asg_name}")
-                elif action == "scale_down":
-                    autoscaling_client.update_auto_scaling_group(
-                        AutoScalingGroupName=asg_name,
-                        DesiredCapacity=1  # Minimum or reduced instance count
-                    )
-                    print(f"Scaled down EC2 instances in Auto Scaling Group: {asg_name}")
-            
-            # EC2 Individual Instance Scaling by Instance Type (if not in ASG)
-            else:
-                if action == "scale_up":
-                    ec2_client.modify_instance_attribute(
-                        InstanceId=instance_id,
-                        Attribute='instanceType',
-                        Value='t3.large'  # Scale to larger instance type as an example
-                    )
-                    ec2_client.start_instances(InstanceIds=[instance_id])
-                    print(f"Upgraded EC2 instance type to t3.large and started instance: {instance_id}")
-                elif action == "scale_down":
-                    ec2_client.stop_instances(InstanceIds=[instance_id])
-                    print(f"Stopped EC2 instance: {instance_id}")
+                try:
+                    if action == "scale_up":
+                        autoscaling_client.update_auto_scaling_group(
+                            AutoScalingGroupName=asg_name,
+                            DesiredCapacity=2  # Adjust this based on your scaling needs
+                        )
+                        latest_scaling_decision = f"Scaled up EC2 instances in Auto Scaling Group: {asg_name}"
+                    elif action == "scale_down":
+                        autoscaling_client.update_auto_scaling_group(
+                            AutoScalingGroupName=asg_name,
+                            DesiredCapacity=1  # Minimum or reduced instance count
+                        )
+                        latest_scaling_decision = f"Scaled down EC2 instances in Auto Scaling Group: {asg_name}"
+                    print(latest_scaling_decision)
+                except Exception as e:
+                    print(f"Error updating Auto Scaling Group {asg_name}: {e}")
+
 
         elif service == "RDS":
             db_instance_identifier = "database-1"  # Replace with actual RDS instance identifier
             if action == "scale_up":
                 rds_client.modify_db_instance(
                     DBInstanceIdentifier=db_instance_identifier,
-                    DBInstanceClass="db.t3.small"  # Example of scaling up , adjust as needed
+                    DBInstanceClass="db.t3.small"  # Example of scaling up, adjust as needed
                 )
-                print(f"Scaled up RDS instance: {db_instance_identifier}")
+                latest_scaling_decision = f"Scaled up RDS instance: {db_instance_identifier}"
             elif action == "scale_down":
                 rds_client.modify_db_instance(
                     DBInstanceIdentifier=db_instance_identifier,
-                    DBInstanceClass="db.t3.micro"  # Example of scaling down 
+                    DBInstanceClass="db.t3.micro"  # Example of scaling down
                 )
-                print(f"Scaled down RDS instance: {db_instance_identifier}")
+                latest_scaling_decision = f"Scaled down RDS instance: {db_instance_identifier}"
+            print(latest_scaling_decision)
 
         elif service == "ECS":
             cluster_name = "testCLuster1"  # Replace with ECS cluster name
@@ -183,14 +178,16 @@ def apply_scaling_action(actions):
                     service=service_name,
                     desiredCount=2  # Increase task count
                 )
-                print(f"Scaled up ECS service: {service_name}")
+                latest_scaling_decision = f"Scaled up ECS service: {service_name}"
             elif action == "scale_down":
                 ecs_client.update_service(
                     cluster=cluster_name,
                     service=service_name,
                     desiredCount=1  # Decrease task count
                 )
-                print(f"Scaled down ECS service: {service_name}")
+                latest_scaling_decision = f"Scaled down ECS service: {service_name}"
+            print(latest_scaling_decision)
+
 
 # Continuous monitoring and scaling loop
 def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluster_name):
@@ -234,7 +231,7 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluste
 
 
         # Scale decision and action
-        decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs, running_task_count_ecs)
+        decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs)
         apply_scaling_action(decision)
         time.sleep(300)  # Refresh every 5 minutes
 
@@ -259,6 +256,11 @@ def stop_monitoring():
 
 # Fixed buttons at the top of the page
 st.sidebar.title("Control Panel")
+latest_decision_placeholder = st.sidebar.empty()  # Placeholder for latest scaling decision
+
+def update_latest_decision(decision_text):
+    latest_decision_placeholder.write(f"**Latest Scaling Decision:** {decision_text}")
+
 if st.sidebar.button("Start Monitoring") and not monitoring_flag:
     start_monitoring()
     time.sleep(10)  # Delay loading graphs by 10 seconds
@@ -274,36 +276,43 @@ def fetch_data():
 
 # Continuous update for graphs only
 while monitoring_flag:
-    df = fetch_data()
-    
-    # Update EC2 graphs
-    with ec2_placeholder:
-        st.subheader("EC2 Metrics")
-        for metric_name in ['CPUUtilization', 'DiskReadOps', 'DiskWriteOps', 'MemoryUsage']:
-            metric_df = df[(df['service'] == 'EC2') & (df['metric_name'] == metric_name)]
-            if not metric_df.empty:
-                fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"EC2 {metric_name}")
-                unique_key = f"ec2_{metric_name}_{time.time()}"
-                st.plotly_chart(fig, key=unique_key)
+    try:
+        # Fetch data
+        df = fetch_data()
 
-    # Update RDS graphs
-    with rds_placeholder:
-        st.subheader("RDS Metrics")
-        for metric_name in ['DatabaseConnections', 'CPUUtilization', 'FreeableMemory']:
-            metric_df = df[(df['service'] == 'RDS') & (df['metric_name'] == metric_name)]
-            if not metric_df.empty:
-                fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"RDS {metric_name}")
-                unique_key = f"rds_{metric_name}_{time.time()}"
-                st.plotly_chart(fig, key=unique_key)
+        # Update EC2 graphs
+        with ec2_placeholder:
+            st.subheader("EC2 Metrics")
+            for metric_name in ['CPUUtilization', 'DiskReadOps', 'DiskWriteOps', 'MemoryUsage']:
+                metric_df = df[(df['service'] == 'EC2') & (df['metric_name'] == metric_name)]
+                if not metric_df.empty:
+                    fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"EC2 {metric_name}")
+                    unique_key = f"ec2_{metric_name}_{time.time()}"
+                    st.plotly_chart(fig, key=unique_key)
 
-    # Update ECS graphs
-    with ecs_placeholder:
-        st.subheader("ECS Metrics")
-        for metric_name in ['CPUUtilization', 'MemoryUtilization']:
-            metric_df = df[(df['service'] == 'ECS') & (df['metric_name'] == metric_name)]
-            if not metric_df.empty:
-                fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"ECS {metric_name}")
-                unique_key = f"ecs_{metric_name}_{time.time()}"
-                st.plotly_chart(fig, key=unique_key)
+        # Update RDS graphs
+        with rds_placeholder:
+            st.subheader("RDS Metrics")
+            for metric_name in ['DatabaseConnections', 'CPUUtilization', 'FreeableMemory']:
+                metric_df = df[(df['service'] == 'RDS') & (df['metric_name'] == metric_name)]
+                if not metric_df.empty:
+                    fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"RDS {metric_name}")
+                    unique_key = f"rds_{metric_name}_{time.time()}"
+                    st.plotly_chart(fig, key=unique_key)
 
+        # Update ECS graphs
+        with ecs_placeholder:
+            st.subheader("ECS Metrics")
+            for metric_name in ['CPUUtilization', 'MemoryUtilization']:
+                metric_df = df[(df['service'] == 'ECS') & (df['metric_name'] == metric_name)]
+                if not metric_df.empty:
+                    fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"ECS {metric_name}")
+                    unique_key = f"ecs_{metric_name}_{time.time()}"
+                    st.plotly_chart(fig, key=unique_key)
+
+    except Exception as e:
+        st.error(f"An error occurred while fetching or plotting data: {e}")
+
+    # Wait for 5 minutes before the next update
     time.sleep(300)  # Refresh every 5 minutes
+    
