@@ -7,6 +7,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import pytz  # Import pytz for timezone handling
+import queue
 
 # Initialize AWS CloudWatch and EC2 clients
 cloudwatch_client = boto3.client('cloudwatch', region_name='ap-southeast-1')
@@ -14,6 +15,8 @@ ec2_client = boto3.client('ec2', region_name='ap-southeast-1')
 rds_client = boto3.client('rds', region_name='ap-southeast-1')
 ecs_client = boto3.client('ecs', region_name='ap-southeast-1')
 autoscaling_client = boto3.client('autoscaling', region_name='ap-southeast-1')  # Auto Scaling client
+
+decision_queue = queue.Queue()
 
 # Global flag for monitoring status
 monitoring_flag = False
@@ -125,14 +128,17 @@ def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_conne
 def apply_scaling_action(actions):
     global latest_scaling_decision  # Access the global variable to store the latest decision
 
+    latest_scaling_decision = ""  # Reset the latest decision
+
     for service, action in actions.items():
         if action == "no_action":
+            latest_scaling_decision = f"No scaling done"
             continue  # Skip if no scaling is required
 
         if service == "EC2":
-            instance_id = "i-0161c9ed927d94b4e"  # Replace with actual EC2 instance ID
+            instance_id = "i-0275ce6aa1f61ca9f"  # Replace with actual EC2 instance ID
             asg_name = "ec2-scaling"  # Replace with Auto Scaling Group name if applicable
-            
+
             # EC2 Scaling with Auto Scaling Group
             if asg_name:  # Check if Auto Scaling Group is used
                 try:
@@ -148,13 +154,11 @@ def apply_scaling_action(actions):
                             DesiredCapacity=1  # Minimum or reduced instance count
                         )
                         latest_scaling_decision = f"Scaled down EC2 instances in Auto Scaling Group: {asg_name}"
-                    print(latest_scaling_decision)
                 except Exception as e:
-                    print(f"Error updating Auto Scaling Group {asg_name}: {e}")
-
+                    latest_scaling_decision = f"Error updating Auto Scaling Group {asg_name}: {e}"
 
         elif service == "RDS":
-            db_instance_identifier = "database-1"  # Replace with actual RDS instance identifier
+            db_instance_identifier = "database-2"  # Replace with actual RDS instance identifier
             if action == "scale_up":
                 rds_client.modify_db_instance(
                     DBInstanceIdentifier=db_instance_identifier,
@@ -167,7 +171,6 @@ def apply_scaling_action(actions):
                     DBInstanceClass="db.t3.micro"  # Example of scaling down
                 )
                 latest_scaling_decision = f"Scaled down RDS instance: {db_instance_identifier}"
-            print(latest_scaling_decision)
 
         elif service == "ECS":
             cluster_name = "testCLuster1"  # Replace with ECS cluster name
@@ -186,7 +189,8 @@ def apply_scaling_action(actions):
                     desiredCount=1  # Decrease task count
                 )
                 latest_scaling_decision = f"Scaled down ECS service: {service_name}"
-            print(latest_scaling_decision)
+
+    return latest_scaling_decision  # Return the latest decision
 
 
 # Continuous monitoring and scaling loop
@@ -197,7 +201,8 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluste
         cpu_utilization_ec2 = get_cloudwatch_metrics(instance_id=instance_id, namespace='AWS/EC2', metric_name='CPUUtilization')
         disk_read_ops_ec2 = get_cloudwatch_metrics(instance_id=instance_id, namespace='AWS/EC2', metric_name='DiskReadOps')
         disk_write_ops_ec2 = get_cloudwatch_metrics(instance_id=instance_id, namespace='AWS/EC2', metric_name='DiskWriteOps')
-        memory_utilization_ec2 = get_cloudwatch_metrics(instance_id=instance_id, namespace='CWAgent', metric_name='mem_used_percent')
+        memory_utilization_ec2 = get_cloudwatch_metrics(instance_id='ip-172-31-28-191.ap-southeast-1.compute.internal', namespace='CWAgent', metric_name='mem_used_percent', dimension_name='host'
+)
 
         connections_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='DatabaseConnections', dimension_name='DBInstanceIdentifier')
         cpu_utilization_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='CPUUtilization', dimension_name='DBInstanceIdentifier')
@@ -232,7 +237,8 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluste
 
         # Scale decision and action
         decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs)
-        apply_scaling_action(decision)
+        latest_decision = apply_scaling_action(decision)  # Get the latest decision
+        update_latest_decision(latest_decision)  # Update the dashboard with the latest decision
         time.sleep(300)  # Refresh every 5 minutes
 
 # Streamlit Dashboard
@@ -244,10 +250,27 @@ ec2_placeholder = st.empty()
 rds_placeholder = st.empty()
 ecs_placeholder = st.empty()
 
+# Placeholder for the latest scaling decision
+latest_decision_placeholder = st.sidebar.empty()
+
+# Function to update the latest decision on the dashboard
+def update_dashboard_with_latest_decision():
+    try:
+        # Check if there's a new decision in the queue
+        while not decision_queue.empty():
+            decision_text = decision_queue.get_nowait()
+            latest_decision_placeholder.write(f"**Latest Scaling Decision:** {decision_text}")
+    except queue.Empty:
+        pass  # No new decisions in the queue
+
+def update_latest_decision(decision_text):
+    # Push the decision into the queue
+    decision_queue.put(decision_text)
+
 def start_monitoring():
     global monitoring_flag
     monitoring_flag = True
-    monitor_thread = threading.Thread(target=monitor_and_scale, args=('i-0161c9ed927d94b4e', 'database-1', 'nginx-service', 'testCluster1'))
+    monitor_thread = threading.Thread(target=monitor_and_scale, args=('i-0275ce6aa1f61ca9f', 'database-2', 'nginx-service', 'testCluster1'))
     monitor_thread.start()
 
 def stop_monitoring():
@@ -256,10 +279,6 @@ def stop_monitoring():
 
 # Fixed buttons at the top of the page
 st.sidebar.title("Control Panel")
-latest_decision_placeholder = st.sidebar.empty()  # Placeholder for latest scaling decision
-
-def update_latest_decision(decision_text):
-    latest_decision_placeholder.write(f"**Latest Scaling Decision:** {decision_text}")
 
 if st.sidebar.button("Start Monitoring") and not monitoring_flag:
     start_monitoring()
@@ -283,22 +302,23 @@ while monitoring_flag:
         # Update EC2 graphs
         with ec2_placeholder:
             st.subheader("EC2 Metrics")
-            for metric_name in ['CPUUtilization', 'DiskReadOps', 'DiskWriteOps', 'MemoryUsage']:
-                metric_df = df[(df['service'] == 'EC2') & (df['metric_name'] == metric_name)]
-                if not metric_df.empty:
-                    fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"EC2 {metric_name}")
-                    unique_key = f"ec2_{metric_name}_{time.time()}"
-                    st.plotly_chart(fig, key=unique_key)
+            ec2_metrics = ['CPUUtilization', 'DiskReadOps', 'DiskWriteOps', 'MemoryUsage']
+            ec2_df = df[(df['service'] == 'EC2') & (df['metric_name'].isin(ec2_metrics))]
+            if not ec2_df.empty:
+                fig = px.line(ec2_df, x="timestamp", y="metric_value", color="metric_name", title="EC2 Metrics Over Time")
+                unique_key = f"ec2_metrics_{time.time()}"
+                st.plotly_chart(fig, key=unique_key)
 
         # Update RDS graphs
         with rds_placeholder:
             st.subheader("RDS Metrics")
-            for metric_name in ['DatabaseConnections', 'CPUUtilization', 'FreeableMemory']:
-                metric_df = df[(df['service'] == 'RDS') & (df['metric_name'] == metric_name)]
-                if not metric_df.empty:
-                    fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"RDS {metric_name}")
-                    unique_key = f"rds_{metric_name}_{time.time()}"
-                    st.plotly_chart(fig, key=unique_key)
+            rds_metrics = ['DatabaseConnections', 'CPUUtilization', 'FreeableMemory']
+            rds_df = df[(df['service'] == 'RDS') & (df['metric_name'].isin(rds_metrics))]
+            if not rds_df.empty:
+                fig = px.line(rds_df, x="timestamp", y="metric_value", color="metric_name", title="RDS Metrics Over Time")
+                unique_key = f"rds_metrics_{time.time()}"
+                st.plotly_chart(fig, key=unique_key)
+
 
         # Update ECS graphs
         with ecs_placeholder:
@@ -309,6 +329,9 @@ while monitoring_flag:
                     fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"ECS {metric_name}")
                     unique_key = f"ecs_{metric_name}_{time.time()}"
                     st.plotly_chart(fig, key=unique_key)
+                    
+        # Update the dashboard with the latest scaling decision
+        update_dashboard_with_latest_decision()
 
     except Exception as e:
         st.error(f"An error occurred while fetching or plotting data: {e}")
