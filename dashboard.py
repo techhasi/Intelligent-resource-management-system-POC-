@@ -43,7 +43,7 @@ def create_metrics_table():
 # Function to get CloudWatch metrics for a specific instance and metric
 def get_cloudwatch_metrics(instance_id, namespace, metric_name, dimension_name='InstanceId'):
     now_colombo = datetime.now(colombo_tz)
-    start_time = now_colombo - timedelta(minutes=10)
+    start_time = now_colombo - timedelta(minutes=5)
     
     response = cloudwatch_client.get_metric_statistics(
         Namespace=namespace,
@@ -111,8 +111,7 @@ def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_conne
     if rds_cpu is not None and rds_memory is not None:
         if rds_cpu > 80 or rds_memory < 25:  # Assuming threshold for RDS freeable memory at 25%
             actions["RDS"] = "scale_up"
-        elif (rds_cpu < 40 and rds_memory > 60 and rds_connections is not None and
-              rds_connections < 100):
+        elif (rds_cpu < 40 and rds_memory > 60 and rds_connections is not None and rds_connections < 100):
             actions["RDS"] = "scale_down"
 
     # ECS Scaling Logic
@@ -162,13 +161,15 @@ def apply_scaling_action(actions):
             if action == "scale_up":
                 rds_client.modify_db_instance(
                     DBInstanceIdentifier=db_instance_identifier,
-                    DBInstanceClass="db.t3.small"  # Example of scaling up, adjust as needed
+                    DBInstanceClass="db.t3.small",  # Example of scaling up, adjust as needed
+                    ApplyImmediately=True 
                 )
                 latest_scaling_decision = f"Scaled up RDS instance: {db_instance_identifier}"
             elif action == "scale_down":
                 rds_client.modify_db_instance(
                     DBInstanceIdentifier=db_instance_identifier,
-                    DBInstanceClass="db.t3.micro"  # Example of scaling down
+                    DBInstanceClass="db.t3.micro", # Example of scaling down
+                    ApplyImmediately=True 
                 )
                 latest_scaling_decision = f"Scaled down RDS instance: {db_instance_identifier}"
 
@@ -190,7 +191,10 @@ def apply_scaling_action(actions):
                 )
                 latest_scaling_decision = f"Scaled down ECS service: {service_name}"
 
-    return latest_scaling_decision  # Return the latest decision
+    # Push the latest decision to the queue
+    update_latest_decision(latest_scaling_decision)
+    print(f"Latest Scaling Decision: {latest_scaling_decision}") 
+    return latest_scaling_decision
 
 
 # Continuous monitoring and scaling loop
@@ -238,7 +242,7 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluste
         # Scale decision and action
         decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs)
         latest_decision = apply_scaling_action(decision)  # Get the latest decision
-        update_latest_decision(latest_decision)  # Update the dashboard with the latest decision
+        #update_latest_decision(latest_decision)  # Update the dashboard with the latest decision
         time.sleep(300)  # Refresh every 5 minutes
 
 # Streamlit Dashboard
@@ -259,7 +263,7 @@ def update_dashboard_with_latest_decision():
         # Check if there's a new decision in the queue
         while not decision_queue.empty():
             decision_text = decision_queue.get_nowait()
-            latest_decision_placeholder.write(f"**Latest Scaling Decision:** {decision_text}")
+            latest_decision_placeholder.markdown(f"**Latest Scaling Decision:** {decision_text}")
     except queue.Empty:
         pass  # No new decisions in the queue
 
@@ -323,12 +327,12 @@ while monitoring_flag:
         # Update ECS graphs
         with ecs_placeholder:
             st.subheader("ECS Metrics")
-            for metric_name in ['CPUUtilization', 'MemoryUtilization']:
-                metric_df = df[(df['service'] == 'ECS') & (df['metric_name'] == metric_name)]
-                if not metric_df.empty:
-                    fig = px.line(metric_df, x="timestamp", y="metric_value", title=f"ECS {metric_name}")
-                    unique_key = f"ecs_{metric_name}_{time.time()}"
-                    st.plotly_chart(fig, key=unique_key)
+            ecs_metrics = ['CPUUtilization', 'MemoryUtilization']
+            ecs_df = df[(df['service'] == 'ECS') & (df['metric_name'].isin(ecs_metrics))]
+            if not ecs_df.empty:
+                fig = px.line(ecs_df, x="timestamp", y="metric_value", color="metric_name", title="ECS Metrics Over Time")
+                unique_key = f"ecs_metrics_{time.time()}"
+                st.plotly_chart(fig, key=unique_key)
                     
         # Update the dashboard with the latest scaling decision
         update_dashboard_with_latest_decision()
