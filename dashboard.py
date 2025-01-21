@@ -21,8 +21,6 @@ decision_queue = queue.Queue()
 # Global flag for monitoring status
 monitoring_flag = False
 
-# Global variable to store the latest scaling decision
-latest_scaling_decision = ""
 
 # Set the timezone to Asia/Colombo
 colombo_tz = pytz.timezone('Asia/Colombo')
@@ -60,27 +58,32 @@ def get_cloudwatch_metrics(instance_id, namespace, metric_name, dimension_name='
     else:
         return None
     
-    # Function to get ECS metrics
-def get_ecs_metrics(service_name, cluster_name, metric_name):
+def get_ecs_metrics(cluster_name, task_definition_family, metric_name):
     now_colombo = datetime.now(colombo_tz)
-    start_time = now_colombo - timedelta(minutes=10)
+    start_time = now_colombo - timedelta(minutes=30)  # Increased to 30 minutes
     
+    print(f"Fetching ECS metrics for Cluster: {cluster_name}, Task Definition Family: {task_definition_family}, Metric: {metric_name}")  # Debug statement
+
     response = cloudwatch_client.get_metric_statistics(
         Namespace='AWS/ECS',
         MetricName=metric_name,
         Dimensions=[
             {'Name': 'ClusterName', 'Value': cluster_name},
-            {'Name': 'ServiceName', 'Value': service_name}
+            {'Name': 'TaskDefinitionFamily', 'Value': task_definition_family}  # Use TaskDefinitionFamily
         ],
         StartTime=start_time,
         EndTime=now_colombo,
         Period=300,  # 5-minute intervals
         Statistics=['Average']
     )
+    print(f"CloudWatch Response: {response}")  # Debug statement
+
     data_points = response['Datapoints']
     if data_points:
+        print(f"ECS Metric ({metric_name}) for {task_definition_family}: {data_points[0]['Average']}")  # Debug statement
         return data_points[0]['Average']
     else:
+        print(f"No data points found for ECS Metric ({metric_name}) for {task_definition_family}")  # Debug statement
         return None
 
 # Function to save metrics to the database
@@ -123,9 +126,11 @@ def scale_decision(ec2_cpu, ec2_disk_read, ec2_disk_write, ec2_memory, rds_conne
 
     return actions
 
+scaling_decisions_history = []
+
 # Function to apply scaling action using AWS SDK
 def apply_scaling_action(actions):
-    global latest_scaling_decision  # Access the global variable to store the latest decision
+    global latest_scaling_decision, scaling_decisions_history
 
     latest_scaling_decision = ""  # Reset the latest decision
 
@@ -173,32 +178,40 @@ def apply_scaling_action(actions):
                 )
                 latest_scaling_decision = f"Scaled down RDS instance: {db_instance_identifier}"
 
-        elif service == "ECS":
-            cluster_name = "testCLuster1"  # Replace with ECS cluster name
-            service_name = "nginx-service"  # Replace with ECS service name
-            if action == "scale_up":
-                ecs_client.update_service(
-                    cluster=cluster_name,
-                    service=service_name,
-                    desiredCount=2  # Increase task count
-                )
-                latest_scaling_decision = f"Scaled up ECS service: {service_name}"
-            elif action == "scale_down":
-                ecs_client.update_service(
-                    cluster=cluster_name,
-                    service=service_name,
-                    desiredCount=1  # Decrease task count
-                )
-                latest_scaling_decision = f"Scaled down ECS service: {service_name}"
+            elif service == "ECS":
+                cluster_name = "my-ecs-cluster"  # New cluster name
+                task_name = "simulate-workload"  # New task name
 
-    # Push the latest decision to the queue
-    update_latest_decision(latest_scaling_decision)
+                if action == "scale_up":
+                    # Start new tasks for the simulate-workload task
+                    response = ecs_client.run_task(
+                        cluster=cluster_name,
+                        taskDefinition=task_name,
+                        count=2  # Start 2 new tasks (adjust as needed)
+                    )
+                    latest_scaling_decision = f"Scaled up ECS tasks: Started 2 new tasks for {task_name}"
+                elif action == "scale_down":
+                    # Stop running tasks for the simulate-workload task
+                    response = ecs_client.stop_task(
+                        cluster=cluster_name,
+                        task="arn:aws:ecs:ap-southeast-1:515966523443:task/my-ecs-cluster/1b624d97ed3c4f40a3709d80613061ac",  # Replace with the actual task ID to stop
+                        reason="Scaling down"
+                    )
+                    latest_scaling_decision = f"Scaled down ECS tasks: Stopped tasks for {task_name}"
+
+    # Append the latest decision to the history list
+    scaling_decisions_history.append(latest_scaling_decision)
+    
+    # Keep only the last 5 decisions
+    if len(scaling_decisions_history) > 5:
+        scaling_decisions_history = scaling_decisions_history[-5:]
+
     print(f"Latest Scaling Decision: {latest_scaling_decision}") 
     return latest_scaling_decision
 
 
 # Continuous monitoring and scaling loop
-def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluster_name):
+def monitor_and_scale(instance_id, rds_instance_id, ecs_task_name, ecs_cluster_name):
     global monitoring_flag
     while monitoring_flag:
         # Collect metrics for EC2, RDS, and ECS
@@ -212,9 +225,9 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluste
         cpu_utilization_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='CPUUtilization', dimension_name='DBInstanceIdentifier')
         freeable_memory_rds = get_cloudwatch_metrics(instance_id=rds_instance_id, namespace='AWS/RDS', metric_name='FreeableMemory', dimension_name='DBInstanceIdentifier')
 
-        cpu_utilization_ecs = get_ecs_metrics(ecs_service_name, ecs_cluster_name, 'CPUUtilization')
-        memory_utilization_ecs = get_ecs_metrics(ecs_service_name, ecs_cluster_name, 'MemoryUtilization')
-        running_task_count_ecs = get_ecs_metrics(ecs_service_name, ecs_cluster_name, 'RunningTaskCount')
+        cpu_utilization_ecs = get_ecs_metrics(cluster_name="my-ecs-cluster", task_definition_family="simulate-workload", metric_name="CPUUtilization")
+        memory_utilization_ecs = get_ecs_metrics(cluster_name="my-ecs-cluster", task_definition_family="simulate-workload", metric_name="MemoryReservation")
+        #running_task_count_ecs = get_ecs_metrics(ecs_task_name, ecs_cluster_name, 'RunningTaskCount')
 
         # Save metrics to database
         if cpu_utilization_ec2 is not None:
@@ -232,17 +245,16 @@ def monitor_and_scale(instance_id, rds_instance_id, ecs_service_name, ecs_cluste
         if freeable_memory_rds is not None:
             save_metrics('RDS', rds_instance_id, 'FreeableMemory', freeable_memory_rds)
         if cpu_utilization_ecs is not None:
-            save_metrics('ECS', ecs_service_name, 'CPUUtilization', cpu_utilization_ecs)
+            save_metrics('ECS', ecs_task_name, 'CPUUtilization', cpu_utilization_ecs)
         if memory_utilization_ecs is not None:
-            save_metrics('ECS', ecs_service_name, 'MemoryUtilization', memory_utilization_ecs)
-        if running_task_count_ecs is not None:
-            save_metrics('ECS', ecs_service_name, 'RunningTaskCount', running_task_count_ecs)
+            save_metrics('ECS', ecs_task_name, 'MemoryUtilization', memory_utilization_ecs)
+        #if running_task_count_ecs is not None:
+            #save_metrics('ECS', ecs_task_name, 'RunningTaskCount', running_task_count_ecs)
 
 
         # Scale decision and action
         decision = scale_decision(cpu_utilization_ec2, disk_read_ops_ec2, disk_write_ops_ec2, memory_utilization_ec2, connections_rds, cpu_utilization_rds, freeable_memory_rds, cpu_utilization_ecs, memory_utilization_ecs)
         latest_decision = apply_scaling_action(decision)  # Get the latest decision
-        #update_latest_decision(latest_decision)  # Update the dashboard with the latest decision
         time.sleep(300)  # Refresh every 5 minutes
 
 # Streamlit Dashboard
@@ -254,27 +266,25 @@ ec2_placeholder = st.empty()
 rds_placeholder = st.empty()
 ecs_placeholder = st.empty()
 
-# Placeholder for the latest scaling decision
-latest_decision_placeholder = st.sidebar.empty()
+# Placeholder for the last 5 scaling decisions
+scaling_history_placeholder = st.sidebar.empty()
 
-# Function to update the latest decision on the dashboard
-def update_dashboard_with_latest_decision():
-    try:
-        # Check if there's a new decision in the queue
-        while not decision_queue.empty():
-            decision_text = decision_queue.get_nowait()
-            latest_decision_placeholder.markdown(f"**Latest Scaling Decision:** {decision_text}")
-    except queue.Empty:
-        pass  # No new decisions in the queue
+# Function to update the last 5 scaling decisions on the dashboard
+def update_scaling_history():
+    if scaling_decisions_history:
+        scaling_history_placeholder.markdown("**Last 5 Scaling Decisions:**")
+        for decision in reversed(scaling_decisions_history):  # Show latest decisions first
+            scaling_history_placeholder.markdown(f"- {decision}")
+    else:
+        scaling_history_placeholder.markdown("No scaling decisions yet.")
 
-def update_latest_decision(decision_text):
-    # Push the decision into the queue
-    decision_queue.put(decision_text)
+# Update the scaling history on the dashboard
+update_scaling_history()
 
 def start_monitoring():
     global monitoring_flag
     monitoring_flag = True
-    monitor_thread = threading.Thread(target=monitor_and_scale, args=('i-0275ce6aa1f61ca9f', 'database-2', 'nginx-service', 'testCluster1'))
+    monitor_thread = threading.Thread(target=monitor_and_scale, args=('i-0275ce6aa1f61ca9f', 'database-2', 'simulate-workload', 'my-ecs-cluster'))
     monitor_thread.start()
 
 def stop_monitoring():
@@ -334,8 +344,6 @@ while monitoring_flag:
                 unique_key = f"ecs_metrics_{time.time()}"
                 st.plotly_chart(fig, key=unique_key)
                     
-        # Update the dashboard with the latest scaling decision
-        update_dashboard_with_latest_decision()
 
     except Exception as e:
         st.error(f"An error occurred while fetching or plotting data: {e}")
