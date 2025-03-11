@@ -21,7 +21,7 @@ class LSTMModel(nn.Module):
         return out
 
 class DQN(nn.Module):
-    def __init__(self, state_size, hidden_dim=64):  # Changed from action_size_per_service and num_services
+    def __init__(self, state_size, hidden_dim=64):
         super(DQN, self).__init__()
         self.fc1 = nn.Linear(state_size, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
@@ -32,17 +32,17 @@ class DQN(nn.Module):
     def forward(self, x):
         x = torch.relu(self.fc1(x))
         x = torch.relu(self.fc2(x))
-        q_ec2 = self.head_ec2(x)  # shape: [batch, 3]
-        q_rds = self.head_rds(x)  # shape: [batch, 3]
-        q_ecs = self.head_ecs(x)  # shape: [batch, 3]
+        q_ec2 = self.head_ec2(x)
+        q_rds = self.head_rds(x)
+        q_ecs = self.head_ecs(x)
         return q_ec2, q_rds, q_ecs
 
-# Define input sizes based on LSTMv4.py
+# Define input sizes
 EC2_INPUT_SIZE = 32
 RDS_INPUT_SIZE = 32
 ECS_INPUT_SIZE = 28
 
-# Model loading with error handling
+# Model loading
 def load_models():
     global ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model
     try:
@@ -58,7 +58,7 @@ def load_models():
         ecs_lstm_model.load_state_dict(torch.load('./Models/ECS_lstm_model.pth', map_location=torch.device('cpu')))
         ecs_lstm_model.eval()
         
-        rl_model = DQN(state_size=3)  # Update instantiation; hidden_dim defaults to 64
+        rl_model = DQN(state_size=3)
         rl_model.load_state_dict(torch.load('./dqn_scaling_model.pth', map_location=torch.device('cpu')))
         rl_model.eval()
         
@@ -69,29 +69,23 @@ def load_models():
         ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model = None, None, None, None
         return False
 
-# Initialize AWS Clients with debug
+# Initialize AWS Clients
 try:
     cloudwatch_client = boto3.client('cloudwatch', region_name='ap-southeast-1')
     ec2_client = boto3.client('ec2', region_name='ap-southeast-1')
     autoscaling_client = boto3.client('autoscaling', region_name='ap-southeast-1')
     rds_client = boto3.client('rds', region_name='ap-southeast-1')
     ecs_client = boto3.client('ecs', region_name='ap-southeast-1')
-    response = cloudwatch_client.list_metrics(Namespace='AWS/EC2')
-    print("CloudWatch metrics available in AWS/EC2:", len(response['Metrics']))
-    response = cloudwatch_client.list_metrics(Namespace='CWAgent')
-    print("CloudWatch metrics available in CWAgent:", len(response['Metrics']))
     print("AWS clients initialized successfully")
 except Exception as e:
     print(f"Error initializing AWS clients: {e}")
     cloudwatch_client, ec2_client, autoscaling_client, rds_client, ecs_client = None, None, None, None, None
 
-# Flask App Initialization
+# Flask App
 app = Flask(__name__)
-
-# Store latest predictions
 dashboard_predictions = {}
 
-# Create and initialize SQLite database
+# SQLite Database
 def create_metrics_table():
     try:
         with sqlite3.connect('cloud_metrics.db') as conn:
@@ -108,7 +102,7 @@ def create_metrics_table():
     except Exception as e:
         print(f"Error initializing database table: {e}")
 
-# Function to get EC2 instance hostname
+# EC2 Hostname
 def get_ec2_hostname(instance_id):
     try:
         response = ec2_client.describe_instances(InstanceIds=[instance_id])
@@ -118,8 +112,8 @@ def get_ec2_hostname(instance_id):
         print(f"Error fetching hostname for instance {instance_id}: {str(e)}")
         return None
 
-# Scaling functions
-def scale_ec2(decision, asg_name='ec2-scaling'):
+# Scaling Functions
+def scale_ec2(decision, asg_name):
     try:
         response = autoscaling_client.describe_auto_scaling_groups(AutoScalingGroupNames=[asg_name])
         current_capacity = response['AutoScalingGroups'][0]['DesiredCapacity']
@@ -133,7 +127,7 @@ def scale_ec2(decision, asg_name='ec2-scaling'):
             autoscaling_client.set_desired_capacity(AutoScalingGroupName=asg_name, DesiredCapacity=new_capacity)
             print(f"Scaled EC2 ASG {asg_name} down to {new_capacity} instances")
         else:
-            print(f"No scaling action for EC2 ASG {asg_name}: {decision}")
+            print(f"No scaling action for EC2 ASG {asg_name}")
     except Exception as e:
         print(f"Error scaling EC2 ASG {asg_name}: {str(e)}")
 
@@ -142,45 +136,70 @@ def scale_rds(decision, db_instance_id='database-2'):
         response = rds_client.describe_db_instances(DBInstanceIdentifier=db_instance_id)
         current_class = response['DBInstances'][0]['DBInstanceClass']
         
-        instance_classes = ['db.t3.micro', 'db.t3.small', 'db.t3.medium']  # Example classes
+        instance_classes = ['db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large']
         current_idx = instance_classes.index(current_class) if current_class in instance_classes else 0
         
         if decision == "scale up" and current_idx < len(instance_classes) - 1:
             new_class = instance_classes[current_idx + 1]
-            rds_client.modify_db_instance(DBInstanceIdentifier=db_instance_id, DBInstanceClass=new_class, ApplyImmediately=True)
+            rds_client.modify_db_instance(
+                DBInstanceIdentifier=db_instance_id, 
+                DBInstanceClass=new_class, 
+                ApplyImmediately=True
+            )
             print(f"Scaled RDS {db_instance_id} up to {new_class}")
         elif decision == "scale down" and current_idx > 0:
             new_class = instance_classes[current_idx - 1]
-            rds_client.modify_db_instance(DBInstanceIdentifier=db_instance_id, DBInstanceClass=new_class, ApplyImmediately=True)
+            rds_client.modify_db_instance(
+                DBInstanceIdentifier=db_instance_id, 
+                DBInstanceClass=new_class, 
+                ApplyImmediately=True
+            )
             print(f"Scaled RDS {db_instance_id} down to {new_class}")
         else:
-            print(f"No scaling action for RDS {db_instance_id}: {decision}")
+            print(f"No scaling action for RDS {db_instance_id}")
     except Exception as e:
         print(f"Error scaling RDS {db_instance_id}: {str(e)}")
 
-def scale_ecs(decision, cluster_name='my-ecs-cluster', service_name='my-ecs-service'):
+def scale_ecs(decision, cluster_name, task_definition):
     try:
-        response = ecs_client.describe_services(cluster=cluster_name, services=[service_name])
-        current_count = response['services'][0]['desiredCount']
-        
-        if decision == "scale up":
-            new_count = current_count + 1
-            ecs_client.update_service(cluster=cluster_name, service=service_name, desiredCount=new_count)
-            print(f"Scaled ECS service {service_name} up to {new_count} tasks")
-        elif decision == "scale down" and current_count > 1:
-            new_count = current_count - 1
-            ecs_client.update_service(cluster=cluster_name, service=service_name, desiredCount=new_count)
-            print(f"Scaled ECS service {service_name} down to {new_count} tasks")
-        else:
-            print(f"No scaling action for ECS service {service_name}: {decision}")
-    except Exception as e:
-        print(f"Error scaling ECS service {service_name}: {str(e)}")
+        response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus='RUNNING')
+        current_count = len(response['taskArns'])
+        print(f"Current running tasks in {cluster_name}: {current_count}")
 
-# Fetch EC2 metrics (latest value)
+        if decision == "scale up":
+            response = ecs_client.run_task(
+                cluster=cluster_name,
+                taskDefinition=task_definition,
+                count=1,
+                launchType='FARGATE',
+                networkConfiguration={
+                    'awsvpcConfiguration': {
+                        'subnets': ['subnet-022cc8297953122fd'],
+                        'securityGroups': ['sg-0e09152973f9c89ae'],
+                        'assignPublicIp': 'ENABLED'
+                    }
+                }
+            )
+            task_arn = response['tasks'][0]['taskArn']
+            print(f"Started new task {task_arn} in cluster {cluster_name}, new count: {current_count + 1}")
+        elif decision == "scale down" and current_count > 1:
+            task_to_stop = response['taskArns'][0]
+            ecs_client.stop_task(
+                cluster=cluster_name,
+                task=task_to_stop,
+                reason='Scaling down based on prediction'
+            )
+            print(f"Stopped task {task_to_stop} in cluster {cluster_name}, new count: {current_count - 1}")
+        else:
+            print(f"No scaling action for cluster {cluster_name}: {decision}")
+    except Exception as e:
+        print(f"Error scaling ECS cluster {cluster_name}: {str(e)}")
+
+# Fetch Metrics
 def fetch_ec2_metrics(instance_id):
     try:
         now = datetime.now(timezone.utc)
-        start_time = now - timedelta(minutes=5)  # Last 5 minutes for latest data
+        start_time = now - timedelta(minutes=5)
         metrics_data = {}
         ec2_metric_names = ['CPUUtilization', 'DiskWriteOps', 'NetworkIn']
         cwagent_metric_names = ['mem_used_percent']
@@ -192,7 +211,7 @@ def fetch_ec2_metrics(instance_id):
                 Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
                 StartTime=start_time,
                 EndTime=now,
-                Period=300,  # 5-minute granularity
+                Period=300,
                 Statistics=['Average']
             )
             if response['Datapoints']:
@@ -211,7 +230,7 @@ def fetch_ec2_metrics(instance_id):
                     Dimensions=[{'Name': 'host', 'Value': hostname}],
                     StartTime=start_time,
                     EndTime=now,
-                    Period=60,
+                    Period=300,
                     Statistics=['Average']
                 )
                 if response['Datapoints']:
@@ -228,7 +247,6 @@ def fetch_ec2_metrics(instance_id):
         print(f"Error fetching EC2 metrics for {instance_id}: {str(e)}")
         return {}
 
-# Fetch RDS metrics (latest value)
 def fetch_rds_metrics(db_instance_id):
     try:
         now = datetime.now(timezone.utc)
@@ -257,8 +275,7 @@ def fetch_rds_metrics(db_instance_id):
         print(f"Error fetching RDS metrics for {db_instance_id}: {str(e)}")
         return {}
 
-# Fetch ECS metrics (latest value)
-def fetch_ecs_metrics(cluster_name, task_id):
+def fetch_ecs_metrics(cluster_name):
     try:
         now = datetime.now(timezone.utc)
         start_time = now - timedelta(minutes=5)
@@ -278,22 +295,25 @@ def fetch_ecs_metrics(cluster_name, task_id):
             if response['Datapoints']:
                 latest_value = sorted(response['Datapoints'], key=lambda x: x['Timestamp'], reverse=True)[0]['Average']
                 metrics_data[metric] = float(latest_value)
+                print(f"ECS {metric} for {cluster_name}: {latest_value}")
             else:
                 metrics_data[metric] = None
-                print(f"No data points for ECS metric {metric} for cluster {cluster_name} (no service defined)")
-        
-        response = ecs_client.list_tasks(cluster=cluster_name)
+                print(f"No data points for ECS metric {metric} for cluster {cluster_name}")
+
+        response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus='RUNNING')
         task_count = len(response['taskArns'])
         metrics_data['RunningTaskCount'] = float(task_count) if task_count > 0 else None
-        if not metrics_data['RunningTaskCount']:
-            print(f"No tasks found for cluster {cluster_name}")
-        
+        if task_count > 0:
+            print(f"Found {task_count} running tasks in cluster {cluster_name}")
+        else:
+            print(f"No running tasks found for cluster {cluster_name}")
+
         return metrics_data
     except Exception as e:
         print(f"Error fetching ECS metrics for cluster {cluster_name}: {str(e)}")
         return {}
 
-# API Endpoint to fetch latest predictions for Grafana
+# API Endpoint
 @app.route('/predictions', methods=['GET'])
 def get_predictions():
     serializable_predictions = {
@@ -302,7 +322,7 @@ def get_predictions():
     }
     return jsonify(serializable_predictions)
 
-# Start monitoring thread
+# Monitoring Thread
 def monitor_and_scale():
     global dashboard_predictions
     models_loaded = load_models()
@@ -331,19 +351,19 @@ def monitor_and_scale():
         return
 
     rl_decision_map = {0: "scale up", 1: "scale down", 2: "no change"}
-    cycle_interval = 300  # 5 minutes in seconds
-    asg_name = 'my-auto-scaling-group'
+    cycle_interval = 300  # 5 minutes
+    instance_id = 'i-0275ce6aa1f61ca9f'
+    asg_name = 'ec2-scaling'
     rds_instance_id = 'database-2'
     ecs_cluster = 'my-ecs-cluster'
-    ecs_service = 'my-ecs-service'
+    task_definition = 'my-task-definition'
 
     while True:
         print("Starting monitoring cycle...")
-        instance_id = 'i-0275ce6aa1f61ca9f'
-
+        
         ec2_metrics = fetch_ec2_metrics(instance_id)
         rds_metrics = fetch_rds_metrics(rds_instance_id)
-        ecs_metrics = fetch_ecs_metrics(ecs_cluster, None)
+        ecs_metrics = fetch_ecs_metrics(ecs_cluster)  # Fixed: Removed extra None argument
 
         print("\nFetched EC2 Metrics:")
         for metric_name, value in ec2_metrics.items():
@@ -367,7 +387,7 @@ def monitor_and_scale():
 
         try:
             rl_input = torch.tensor([ec2_pred, rds_pred, ecs_pred], dtype=torch.float32).unsqueeze(0)
-            q_ec2, q_rds, q_ecs = rl_model(rl_input)  # Updated to handle multi-head output
+            q_ec2, q_rds, q_ecs = rl_model(rl_input)
             ec2_decision = rl_decision_map[torch.argmax(q_ec2, dim=1).item()]
             rds_decision = rl_decision_map[torch.argmax(q_rds, dim=1).item()]
             ecs_decision = rl_decision_map[torch.argmax(q_ecs, dim=1).item()]
@@ -375,10 +395,9 @@ def monitor_and_scale():
             print(f"Error in RL decision: {e}")
             ec2_decision = rds_decision = ecs_decision = "no change"
 
-        # Apply scaling decisions
         scale_ec2(ec2_decision, asg_name)
         scale_rds(rds_decision, rds_instance_id)
-        scale_ecs(ecs_decision, ecs_cluster, ecs_service)
+        scale_ecs(ecs_decision, ecs_cluster, task_definition)
 
         dashboard_predictions = {
             "EC2_CPU": ec2_metrics.get('CPUUtilization', 0.0),
@@ -401,7 +420,7 @@ def monitor_and_scale():
             minutes, seconds = divmod(remaining, 60)
             print(f"  {minutes:02d}:{seconds:02d}", end="\r")
             time.sleep(1)
-        print(" " * 20)  # Clear the line after countdown
+        print(" " * 20)
 
 monitoring_thread = threading.Thread(target=monitor_and_scale, daemon=True)
 monitoring_thread.start()
