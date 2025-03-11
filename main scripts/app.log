@@ -1,0 +1,736 @@
+2025-03-11 18:55:05,799 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-11 18:55:05,948 - INFO - AWS clients initialized successfully
+2025-03-11 18:55:05,953 - INFO - Database table initialized successfully
+2025-03-11 18:55:05,970 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.41:5002
+2025-03-11 18:55:05,970 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 18:55:05,984 - INFO - Models loaded successfully
+2025-03-11 18:55:05,984 - INFO - Starting monitoring cycle...
+2025-03-11 18:55:05,984 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 18:55:06,889 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 18:55:06,941 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 18:55:06,941 - INFO - Fetching RDS metrics for database-2
+2025-03-11 18:55:07,145 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 18:55:07,145 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 18:55:07,570 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 18:55:07,570 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 18:55:07,570 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 18:55:07,570 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 18:55:07,593 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 18:55:07,999 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 18:55:09,036 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 18:55:09,097 - INFO - No scaling action for cluster my-ecs-cluster: scale down
+2025-03-11 18:55:09,098 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 18:55:09,098 - INFO - Next cycle in 300 seconds
+2025-03-11 19:00:09,099 - INFO - Starting monitoring cycle...
+2025-03-11 19:00:09,110 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:00:10,069 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:00:10,120 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:00:10,120 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:00:10,326 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:00:10,327 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:00:10,761 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:00:10,761 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:00:10,762 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:00:10,762 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:00:10,820 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:00:11,162 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:00:12,085 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:00:12,152 - INFO - No scaling action for cluster my-ecs-cluster: scale down
+2025-03-11 19:00:12,153 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:00:12,153 - INFO - Next cycle in 300 seconds
+2025-03-11 19:05:12,152 - INFO - Starting monitoring cycle...
+2025-03-11 19:05:12,156 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:05:13,066 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:05:13,158 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:05:13,158 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:05:13,362 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:05:13,363 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:05:13,782 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:05:13,782 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:05:13,782 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:05:13,782 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:05:13,855 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:05:14,217 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:05:15,047 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:05:15,108 - INFO - No scaling action for cluster my-ecs-cluster: scale down
+2025-03-11 19:05:15,109 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:05:15,109 - INFO - Next cycle in 300 seconds
+2025-03-11 19:05:23,866 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-11 19:05:24,015 - INFO - AWS clients initialized successfully
+2025-03-11 19:05:24,019 - INFO - Database table initialized successfully
+2025-03-11 19:05:24,038 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.41:5002
+2025-03-11 19:05:24,038 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 19:05:24,048 - INFO - Models loaded successfully
+2025-03-11 19:05:24,048 - INFO - Starting monitoring cycle...
+2025-03-11 19:05:24,048 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:05:25,641 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:05:25,699 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:05:25,700 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:05:25,936 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:05:25,937 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:05:26,407 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:05:26,408 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:05:26,408 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:05:26,408 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:05:26,416 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:05:26,807 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:05:27,605 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:05:27,680 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:05:27,681 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:05:27,681 - INFO - Next cycle in 300 seconds
+2025-03-11 19:08:56,535 - INFO - 127.0.0.1 - - [11/Mar/2025 19:08:56] "GET /predictions HTTP/1.1" 200 -
+2025-03-11 19:10:28,828 - INFO - Starting monitoring cycle...
+2025-03-11 19:10:28,833 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:10:29,774 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:10:29,827 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:10:29,827 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:10:30,041 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:10:30,041 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:10:30,502 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:10:30,502 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:10:30,502 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:10:30,503 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:10:30,565 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:10:30,944 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:10:31,886 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:10:31,955 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:10:31,956 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:10:31,956 - INFO - Next cycle in 300 seconds
+2025-03-11 19:15:33,167 - INFO - Starting monitoring cycle...
+2025-03-11 19:15:33,175 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:15:34,013 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:15:34,062 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:15:34,063 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:15:34,261 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:15:34,262 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:15:34,682 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:15:34,682 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:15:34,682 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:15:34,682 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:15:34,744 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:15:35,144 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:15:36,062 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:15:36,123 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:15:36,123 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:15:36,123 - INFO - Next cycle in 300 seconds
+2025-03-11 19:20:37,330 - INFO - Starting monitoring cycle...
+2025-03-11 19:20:37,335 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:20:38,219 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:20:38,271 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:20:38,271 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:20:38,483 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:20:38,483 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:20:39,001 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:20:39,001 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:20:39,001 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:20:39,001 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:20:39,071 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:20:39,458 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:20:40,416 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:20:40,477 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:20:40,478 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:20:40,478 - INFO - Next cycle in 300 seconds
+2025-03-11 19:25:41,614 - INFO - Starting monitoring cycle...
+2025-03-11 19:25:41,623 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:25:42,627 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:25:42,680 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:25:42,681 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:25:42,932 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:25:42,933 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:25:43,440 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:25:43,440 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:25:43,440 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:25:43,440 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:25:43,504 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:25:43,934 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:25:44,816 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:25:44,881 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:25:44,881 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:25:44,881 - INFO - Next cycle in 300 seconds
+2025-03-11 19:30:46,093 - INFO - Starting monitoring cycle...
+2025-03-11 19:30:46,100 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:30:46,980 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:30:47,035 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:30:47,036 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:30:47,255 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:30:47,256 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:30:47,750 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:30:47,750 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:30:47,750 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:30:47,750 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:30:47,825 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:30:48,249 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:30:49,236 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:30:49,313 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:30:49,313 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:30:49,313 - INFO - Next cycle in 300 seconds
+2025-03-11 19:35:50,572 - INFO - Starting monitoring cycle...
+2025-03-11 19:35:50,578 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:35:51,425 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:35:51,478 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:35:51,479 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:35:51,700 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:35:51,701 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:35:52,172 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:35:52,172 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:35:52,172 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:35:52,172 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:35:52,246 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:35:52,582 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:35:53,463 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:35:53,524 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:35:53,524 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:35:53,525 - INFO - Next cycle in 300 seconds
+2025-03-11 19:36:16,853 - INFO - 127.0.0.1 - - [11/Mar/2025 19:36:16] "OPTIONS /stop/ec2 HTTP/1.1" 200 -
+2025-03-11 19:36:19,946 - INFO - 127.0.0.1 - - [11/Mar/2025 19:36:19] "OPTIONS /stop/rds HTTP/1.1" 200 -
+2025-03-11 19:36:22,777 - INFO - 127.0.0.1 - - [11/Mar/2025 19:36:22] "OPTIONS /scale/ec2 HTTP/1.1" 200 -
+2025-03-11 19:36:25,305 - INFO - 127.0.0.1 - - [11/Mar/2025 19:36:25] "OPTIONS /scale/ec2 HTTP/1.1" 200 -
+2025-03-11 19:36:26,745 - INFO - 127.0.0.1 - - [11/Mar/2025 19:36:26] "OPTIONS /stop/ec2 HTTP/1.1" 200 -
+2025-03-11 19:37:41,186 - INFO - 127.0.0.1 - - [11/Mar/2025 19:37:41] "OPTIONS /stop/ec2 HTTP/1.1" 200 -
+2025-03-11 19:37:50,645 - INFO - 127.0.0.1 - - [11/Mar/2025 19:37:50] "OPTIONS /scale/ec2 HTTP/1.1" 200 -
+2025-03-11 19:37:51,279 - INFO - 127.0.0.1 - - [11/Mar/2025 19:37:51] "OPTIONS /scale/ec2 HTTP/1.1" 200 -
+2025-03-11 19:38:40,251 - INFO - 127.0.0.1 - - [11/Mar/2025 19:38:40] "[33mGET / HTTP/1.1[0m" 404 -
+2025-03-11 19:38:54,847 - INFO - 127.0.0.1 - - [11/Mar/2025 19:38:54] "[33mGET / HTTP/1.1[0m" 404 -
+2025-03-11 19:38:55,173 - INFO - 127.0.0.1 - - [11/Mar/2025 19:38:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-11 19:41:10,711 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-11 19:41:10,853 - INFO - AWS clients initialized successfully
+2025-03-11 19:41:10,858 - INFO - Database table initialized successfully
+2025-03-11 19:41:10,890 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.41:5002
+2025-03-11 19:41:10,890 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 19:41:10,900 - INFO - Models loaded successfully
+2025-03-11 19:41:10,900 - INFO - Starting monitoring cycle...
+2025-03-11 19:41:10,900 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:41:11,765 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:41:11,817 - INFO - EC2 metrics fetched: {'CPUUtilization': 40.260995650072495, 'DiskWriteOps': None, 'NetworkIn': 23079.0, 'MemoryUtilization': 15.257544278279473}
+2025-03-11 19:41:11,817 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:41:12,041 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:41:12,041 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:41:12,497 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:41:12,497 - INFO - EC2 Metrics: {'CPUUtilization': 40.260995650072495, 'DiskWriteOps': None, 'NetworkIn': 23079.0, 'MemoryUtilization': 15.257544278279473}
+2025-03-11 19:41:12,497 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:41:12,497 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:41:12,531 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:41:12,965 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:41:13,933 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:41:14,012 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:41:14,013 - INFO - Dashboard Predictions: {'EC2_CPU': 40.260995650072495, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.6432749032974243, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:41:14,013 - INFO - Next cycle in 300 seconds
+2025-03-11 19:41:30,374 - INFO - 127.0.0.1 - - [11/Mar/2025 19:41:30] "[31m[1mGET /stop/ecs HTTP/1.1[0m" 405 -
+2025-03-11 19:42:10,912 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:10] "OPTIONS /stop/ec2 HTTP/1.1" 200 -
+2025-03-11 19:42:11,645 - INFO - Stopped EC2 instances: i-0275ce6aa1f61ca9f, i-08dd26f619f3a7979
+2025-03-11 19:42:11,646 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:11] "POST /stop/ec2 HTTP/1.1" 200 -
+2025-03-11 19:42:17,989 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:17] "OPTIONS /stop/rds HTTP/1.1" 200 -
+2025-03-11 19:42:18,359 - INFO - No stoppable RDS instances found
+2025-03-11 19:42:18,360 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:18] "POST /stop/rds HTTP/1.1" 200 -
+2025-03-11 19:42:21,419 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:21] "OPTIONS /stop/ecs HTTP/1.1" 200 -
+2025-03-11 19:42:21,686 - INFO - No running tasks found
+2025-03-11 19:42:21,687 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:21] "POST /stop/ecs HTTP/1.1" 200 -
+2025-03-11 19:42:30,705 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:30] "OPTIONS /scale/rds HTTP/1.1" 200 -
+2025-03-11 19:42:31,498 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:42:31,499 - INFO - 127.0.0.1 - - [11/Mar/2025 19:42:31] "POST /scale/rds HTTP/1.1" 200 -
+2025-03-11 19:46:15,167 - INFO - Starting monitoring cycle...
+2025-03-11 19:46:15,178 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:46:16,115 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:46:16,168 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': 16.458149054779586}
+2025-03-11 19:46:16,168 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:46:16,383 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:46:16,383 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:46:16,823 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:46:16,824 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': 16.458149054779586}
+2025-03-11 19:46:16,824 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:46:16,824 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:46:16,908 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:46:17,333 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:46:18,398 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:46:18,457 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:46:18,457 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': 0.6839863657951355, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:46:18,457 - INFO - Next cycle in 300 seconds
+2025-03-11 19:51:20,325 - INFO - Starting monitoring cycle...
+2025-03-11 19:51:20,329 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:51:21,232 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:51:21,287 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:51:21,287 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:51:21,506 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:51:21,507 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:51:21,963 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:51:21,964 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:51:21,964 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:51:21,964 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:51:21,981 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:51:22,368 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:51:23,231 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:51:23,296 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:51:23,297 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:51:23,297 - INFO - Next cycle in 300 seconds
+2025-03-11 19:56:25,542 - INFO - Starting monitoring cycle...
+2025-03-11 19:56:25,547 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 19:56:26,495 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 19:56:26,556 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:56:26,556 - INFO - Fetching RDS metrics for database-2
+2025-03-11 19:56:26,806 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:56:26,807 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 19:56:27,280 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:56:27,280 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 19:56:27,280 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 19:56:27,280 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 19:56:27,294 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 19:56:27,654 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 19:56:28,491 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 19:56:28,559 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 19:56:28,560 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 19:56:28,560 - INFO - Next cycle in 300 seconds
+2025-03-11 20:01:30,786 - INFO - Starting monitoring cycle...
+2025-03-11 20:01:30,788 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:01:31,861 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:01:31,917 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:01:31,917 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:01:32,139 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:01:32,140 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:01:32,599 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:01:32,599 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:01:32,599 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:01:32,599 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:01:32,614 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:01:32,989 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:01:33,949 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:01:34,016 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:01:34,016 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:01:34,017 - INFO - Next cycle in 300 seconds
+2025-03-11 20:06:36,240 - INFO - Starting monitoring cycle...
+2025-03-11 20:06:36,243 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:06:37,115 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:06:37,169 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:06:37,171 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:06:37,391 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:06:37,392 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:06:37,872 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:06:37,872 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:06:37,872 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:06:37,872 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:06:37,886 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:06:38,317 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:06:39,149 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:06:39,223 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:06:39,223 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:06:39,223 - INFO - Next cycle in 300 seconds
+2025-03-11 20:11:41,503 - INFO - Starting monitoring cycle...
+2025-03-11 20:11:41,511 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:11:42,395 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:11:42,455 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:11:42,455 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:11:42,699 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:11:42,699 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:11:43,153 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:11:43,154 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:11:43,154 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:11:43,154 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:11:43,230 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:11:43,600 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:11:44,552 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:11:44,612 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:11:44,612 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:11:44,612 - INFO - Next cycle in 300 seconds
+2025-03-11 20:16:46,848 - INFO - Starting monitoring cycle...
+2025-03-11 20:16:46,852 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:16:47,861 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:16:47,923 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:16:47,924 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:16:48,170 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:16:48,170 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:16:48,615 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:16:48,616 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:16:48,616 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:16:48,616 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:16:48,638 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:16:48,976 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:16:49,907 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:16:50,037 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:16:50,038 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:16:50,038 - INFO - Next cycle in 300 seconds
+2025-03-11 20:21:52,299 - INFO - Starting monitoring cycle...
+2025-03-11 20:21:52,301 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:21:53,075 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:21:53,131 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:21:53,131 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:21:53,351 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:21:53,352 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:21:53,817 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:21:53,818 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:21:53,818 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:21:53,818 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:21:53,831 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:21:54,204 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:21:55,159 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:21:55,226 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:21:55,227 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:21:55,227 - INFO - Next cycle in 300 seconds
+2025-03-11 20:26:57,475 - INFO - Starting monitoring cycle...
+2025-03-11 20:26:57,479 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:26:58,390 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:26:58,444 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:26:58,445 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:26:58,658 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:26:58,658 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:26:59,125 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:26:59,125 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:26:59,126 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:26:59,126 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:26:59,139 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:26:59,482 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:27:00,407 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:27:00,471 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:27:00,471 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:27:00,471 - INFO - Next cycle in 300 seconds
+2025-03-11 20:32:02,684 - INFO - Starting monitoring cycle...
+2025-03-11 20:32:02,690 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:32:03,701 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:32:03,757 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:32:03,757 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:32:03,976 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:32:03,977 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:32:04,430 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:32:04,431 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:32:04,431 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:32:04,431 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:32:04,448 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:32:04,793 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:32:05,704 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:32:05,771 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:32:05,771 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:32:05,772 - INFO - Next cycle in 300 seconds
+2025-03-11 20:37:07,993 - INFO - Starting monitoring cycle...
+2025-03-11 20:37:08,000 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:37:08,920 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:37:08,992 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:37:08,992 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:37:09,293 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:37:09,294 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:37:09,759 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:37:09,760 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:37:09,760 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:37:09,760 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:37:09,844 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:37:10,217 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:37:11,221 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:37:11,284 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:37:11,285 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:37:11,285 - INFO - Next cycle in 300 seconds
+2025-03-11 20:42:13,539 - INFO - Starting monitoring cycle...
+2025-03-11 20:42:13,546 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:42:14,497 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:42:14,555 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:42:14,555 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:42:14,771 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:42:14,771 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:42:15,210 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:42:15,210 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:42:15,211 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:42:15,211 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:42:15,285 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:42:15,678 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:42:16,575 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:42:16,636 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:42:16,636 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:42:16,637 - INFO - Next cycle in 300 seconds
+2025-03-11 20:47:18,860 - INFO - Starting monitoring cycle...
+2025-03-11 20:47:18,871 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:47:19,852 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:47:19,917 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:47:19,918 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:47:20,190 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:47:20,190 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:47:20,779 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:47:20,780 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:47:20,780 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:47:20,780 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:47:20,842 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:47:21,220 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:47:22,339 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:47:22,407 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:47:22,408 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:47:22,408 - INFO - Next cycle in 300 seconds
+2025-03-11 20:52:24,632 - INFO - Starting monitoring cycle...
+2025-03-11 20:52:24,636 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:52:25,515 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:52:25,570 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:52:25,570 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:52:25,789 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:52:25,789 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:52:26,243 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:52:26,243 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:52:26,243 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:52:26,243 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:52:26,257 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:52:26,646 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:52:27,591 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:52:27,655 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:52:27,656 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:52:27,656 - INFO - Next cycle in 300 seconds
+2025-03-11 20:57:29,967 - INFO - Starting monitoring cycle...
+2025-03-11 20:57:29,970 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 20:57:31,000 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 20:57:31,065 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:57:31,065 - INFO - Fetching RDS metrics for database-2
+2025-03-11 20:57:31,317 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:57:31,318 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 20:57:31,802 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:57:31,802 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 20:57:31,802 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 20:57:31,802 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 20:57:31,818 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 20:57:32,257 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 20:57:33,147 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 20:57:33,213 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 20:57:33,213 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 20:57:33,213 - INFO - Next cycle in 300 seconds
+2025-03-11 21:02:35,372 - INFO - Starting monitoring cycle...
+2025-03-11 21:02:35,376 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:02:36,550 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:02:36,628 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:02:36,628 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:02:36,905 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:02:36,905 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:02:38,826 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:02:38,826 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:02:38,826 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:02:38,826 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:02:38,851 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:02:40,336 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:02:41,313 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:02:41,411 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:02:41,412 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:02:41,412 - INFO - Next cycle in 300 seconds
+2025-03-11 21:07:43,671 - INFO - Starting monitoring cycle...
+2025-03-11 21:07:43,675 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:07:44,554 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:07:44,610 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:07:44,610 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:07:44,827 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:07:44,827 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:07:45,252 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:07:45,252 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:07:45,253 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:07:45,253 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:07:45,266 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:07:45,651 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:07:46,542 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:07:46,609 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:07:46,609 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:07:46,609 - INFO - Next cycle in 300 seconds
+2025-03-11 21:12:48,877 - INFO - Starting monitoring cycle...
+2025-03-11 21:12:48,894 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:12:49,758 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:12:49,813 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:12:49,813 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:12:50,028 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:12:50,028 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:12:50,529 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:12:50,530 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:12:50,530 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:12:50,530 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:12:50,545 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:12:50,967 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:12:51,872 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:12:51,943 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:12:51,944 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:12:51,944 - INFO - Next cycle in 300 seconds
+2025-03-11 21:17:54,201 - INFO - Starting monitoring cycle...
+2025-03-11 21:17:54,204 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:17:55,034 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:17:55,090 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:17:55,090 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:17:55,311 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:17:55,312 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:17:55,752 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:17:55,753 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:17:55,753 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:17:55,753 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:17:55,767 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:17:56,227 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:17:57,127 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:17:57,186 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:17:57,186 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:17:57,186 - INFO - Next cycle in 300 seconds
+2025-03-11 21:22:59,501 - INFO - Starting monitoring cycle...
+2025-03-11 21:22:59,505 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:23:00,428 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:23:00,482 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:23:00,483 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:23:00,702 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:23:00,703 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:23:01,182 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:23:01,182 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:23:01,182 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:23:01,182 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:23:01,198 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:23:01,551 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:23:02,687 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:23:02,759 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:23:02,759 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:23:02,759 - INFO - Next cycle in 300 seconds
+2025-03-11 21:28:05,040 - INFO - Starting monitoring cycle...
+2025-03-11 21:28:05,043 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:28:05,992 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:28:06,046 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:28:06,047 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:28:06,261 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:28:06,261 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:28:06,678 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:28:06,678 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:28:06,678 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:28:06,678 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:28:06,691 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:28:07,151 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:28:08,143 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:28:08,208 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:28:08,209 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:28:08,209 - INFO - Next cycle in 300 seconds
+2025-03-11 21:33:10,468 - INFO - Starting monitoring cycle...
+2025-03-11 21:33:10,472 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:33:11,421 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:33:11,484 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:33:11,484 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:33:11,734 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:33:11,734 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:33:12,545 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:33:12,545 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:33:12,545 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:33:12,545 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:33:12,552 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:33:13,072 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:33:13,980 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:33:14,045 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:33:14,045 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:33:14,045 - INFO - Next cycle in 300 seconds
+2025-03-11 21:38:16,272 - INFO - Starting monitoring cycle...
+2025-03-11 21:38:16,278 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:38:17,257 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:38:17,313 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:38:17,313 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:38:17,532 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:38:17,533 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:38:18,009 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:38:18,010 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:38:18,010 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:38:18,010 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:38:18,025 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:38:18,445 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:38:19,364 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:38:19,431 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:38:19,432 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:38:19,432 - INFO - Next cycle in 300 seconds
+2025-03-11 21:43:21,660 - INFO - Starting monitoring cycle...
+2025-03-11 21:43:21,662 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:43:22,638 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:43:22,698 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:43:22,699 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:43:22,946 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:43:22,946 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:43:23,399 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:43:23,400 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:43:23,400 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:43:23,400 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:43:23,412 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:43:23,762 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:43:24,595 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:43:24,879 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:43:24,879 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:43:24,879 - INFO - Next cycle in 300 seconds
+2025-03-11 21:48:27,063 - INFO - Starting monitoring cycle...
+2025-03-11 21:48:27,066 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:48:27,963 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:48:28,016 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:48:28,016 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:48:28,241 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:48:28,241 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:48:28,707 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:48:28,708 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:48:28,708 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:48:28,708 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:48:28,721 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:48:29,229 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:48:30,277 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:48:30,345 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:48:30,345 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:48:30,345 - INFO - Next cycle in 300 seconds
+2025-03-11 21:53:32,566 - INFO - Starting monitoring cycle...
+2025-03-11 21:53:32,569 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:53:33,490 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:53:33,542 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:53:33,542 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:53:33,757 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:53:33,758 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:53:34,196 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:53:34,197 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:53:34,197 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:53:34,197 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:53:34,218 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:53:34,652 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:53:35,529 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:53:35,591 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:53:35,592 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:53:35,592 - INFO - Next cycle in 300 seconds
+2025-03-11 21:58:37,355 - INFO - Starting monitoring cycle...
+2025-03-11 21:58:37,361 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 21:58:38,359 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-11 21:58:38,426 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:58:38,426 - INFO - Fetching RDS metrics for database-2
+2025-03-11 21:58:38,694 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:58:38,694 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 21:58:39,181 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:58:39,182 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-11 21:58:39,182 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-11 21:58:39,182 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-11 21:58:39,260 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 21:58:39,708 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-11 21:58:40,586 - ERROR - Error scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-11 21:58:40,652 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-11 21:58:40,652 - INFO - Dashboard Predictions: {'EC2_CPU': None, 'RDS_CPU': None, 'ECS_CPU': None, 'EC2_LSTM_Prediction': -0.06308083981275558, 'RDS_LSTM_Prediction': -0.029888572171330452, 'ECS_LSTM_Prediction': 0.007885957136750221, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 21:58:40,653 - INFO - Next cycle in 300 seconds
+2025-03-11 22:03:42,072 - INFO - Starting monitoring cycle...
+2025-03-11 22:03:42,080 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 22:03:49,397 - ERROR - Error fetching EC2 metrics for i-0275ce6aa1f61ca9f: Could not connect to the endpoint URL: "https://monitoring.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:03:49,398 - INFO - Fetching RDS metrics for database-2
+2025-03-11 22:03:57,128 - ERROR - Error fetching RDS metrics for database-2: Could not connect to the endpoint URL: "https://monitoring.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:03:57,129 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 22:04:03,250 - ERROR - Error fetching ECS metrics for my-ecs-cluster: Could not connect to the endpoint URL: "https://monitoring.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:04:03,251 - INFO - EC2 Metrics: {}
+2025-03-11 22:04:03,251 - INFO - RDS Metrics: {}
+2025-03-11 22:04:03,251 - INFO - ECS Metrics: {}
+2025-03-11 22:04:03,252 - WARNING - No model or invalid input data for prediction
+2025-03-11 22:04:03,252 - WARNING - No model or invalid input data for prediction
+2025-03-11 22:04:03,252 - WARNING - No model or invalid input data for prediction
+2025-03-11 22:04:03,279 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 22:04:14,545 - ERROR - Error scaling EC2 ASG ec2-scaling: Could not connect to the endpoint URL: "https://autoscaling.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:04:21,198 - ERROR - Error scaling RDS database-2: Could not connect to the endpoint URL: "https://rds.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:04:33,008 - ERROR - Error scaling ECS cluster my-ecs-cluster: Could not connect to the endpoint URL: "https://ecs.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:04:33,008 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 0.0, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.0, 'RDS_LSTM_Prediction': 0.0, 'ECS_LSTM_Prediction': 0.0, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 22:04:33,008 - INFO - Next cycle in 300 seconds
+2025-03-11 22:09:34,223 - INFO - Starting monitoring cycle...
+2025-03-11 22:09:34,225 - INFO - Fetching EC2 metrics for i-0275ce6aa1f61ca9f
+2025-03-11 22:09:40,460 - ERROR - Error fetching EC2 metrics for i-0275ce6aa1f61ca9f: Could not connect to the endpoint URL: "https://monitoring.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:09:40,461 - INFO - Fetching RDS metrics for database-2
+2025-03-11 22:09:43,764 - ERROR - Error fetching RDS metrics for database-2: Could not connect to the endpoint URL: "https://monitoring.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:09:43,765 - INFO - Fetching ECS metrics for my-ecs-cluster
+2025-03-11 22:09:53,674 - ERROR - Error fetching ECS metrics for my-ecs-cluster: Could not connect to the endpoint URL: "https://monitoring.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:09:53,675 - INFO - EC2 Metrics: {}
+2025-03-11 22:09:53,675 - INFO - RDS Metrics: {}
+2025-03-11 22:09:53,675 - INFO - ECS Metrics: {}
+2025-03-11 22:09:53,675 - WARNING - No model or invalid input data for prediction
+2025-03-11 22:09:53,675 - WARNING - No model or invalid input data for prediction
+2025-03-11 22:09:53,675 - WARNING - No model or invalid input data for prediction
+2025-03-11 22:09:53,678 - INFO - Decisions - EC2: scale down, RDS: scale up, ECS: scale down
+2025-03-11 22:10:00,015 - ERROR - Error scaling EC2 ASG ec2-scaling: Could not connect to the endpoint URL: "https://autoscaling.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:10:11,611 - ERROR - Error scaling RDS database-2: Could not connect to the endpoint URL: "https://rds.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:10:19,224 - ERROR - Error scaling ECS cluster my-ecs-cluster: Could not connect to the endpoint URL: "https://ecs.ap-southeast-1.amazonaws.com/"
+2025-03-11 22:10:19,224 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 0.0, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.0, 'RDS_LSTM_Prediction': 0.0, 'ECS_LSTM_Prediction': 0.0, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
+2025-03-11 22:10:19,224 - INFO - Next cycle in 300 seconds
