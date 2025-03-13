@@ -70,15 +70,15 @@ def load_models():
     global ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model
     try:
         ec2_lstm_model = LSTMModel(input_size=EC2_INPUT_SIZE)
-        ec2_lstm_model.load_state_dict(torch.load('./Models/EC2_lstm_model.pth', map_location=torch.device('cpu')))
+        ec2_lstm_model.load_state_dict(torch.load('./models/EC2_lstm_model.pth', map_location=torch.device('cpu')))
         ec2_lstm_model.eval()
         
         rds_lstm_model = LSTMModel(input_size=RDS_INPUT_SIZE)
-        rds_lstm_model.load_state_dict(torch.load('./Models/RDS_lstm_model.pth', map_location=torch.device('cpu')))
+        rds_lstm_model.load_state_dict(torch.load('./models/RDS_lstm_model.pth', map_location=torch.device('cpu')))
         rds_lstm_model.eval()
         
         ecs_lstm_model = LSTMModel(input_size=ECS_INPUT_SIZE)
-        ecs_lstm_model.load_state_dict(torch.load('./Models/ECS_lstm_model.pth', map_location=torch.device('cpu')))
+        ecs_lstm_model.load_state_dict(torch.load('./models/ECS_lstm_model.pth', map_location=torch.device('cpu')))
         ecs_lstm_model.eval()
         
         rl_model = DQN(state_size=3)
@@ -219,11 +219,20 @@ def scale_ecs(decision, cluster_name, task_definition):
 
 def stop_ec2():
     try:
-        response = ec2_client.describe_instances(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
-        instances = [instance['InstanceId'] for reservation in response['Reservations'] for instance in reservation['Instances']]
+        response = ec2_client.describe_instances(
+            Filters=[{'Name': 'instance-state-name', 'Values': ['running']}]
+        )
+        # Exclude the specified instance from the list
+        exclude_instance = "i-0d586a401b59d560f"
+        instances = [
+            instance['InstanceId']
+            for reservation in response['Reservations']
+            for instance in reservation['Instances']
+            if instance['InstanceId'] != exclude_instance
+        ]
         if not instances:
-            logger.info("No running EC2 instances found")
-            return "No running EC2 instances found to stop"
+            logger.info("No running EC2 instances found (excluding the specified instance)")
+            return "No running EC2 instances found to stop (excluding the specified instance)"
         ec2_client.stop_instances(InstanceIds=instances)
         logger.info(f"Stopped EC2 instances: {', '.join(instances)}")
         return f"Stopped EC2 instances: {', '.join(instances)}"
@@ -235,6 +244,7 @@ def stop_ec2():
     except Exception as e:
         logger.error(f"Error stopping EC2 instances: {str(e)}")
         return f"Error stopping EC2 instances: {str(e)}"
+
 
 def stop_rds():
     try:
