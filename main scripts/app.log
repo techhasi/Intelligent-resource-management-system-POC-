@@ -734,3 +734,216 @@
 2025-03-11 22:10:19,224 - ERROR - Error scaling ECS cluster my-ecs-cluster: Could not connect to the endpoint URL: "https://ecs.ap-southeast-1.amazonaws.com/"
 2025-03-11 22:10:19,224 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 0.0, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.0, 'RDS_LSTM_Prediction': 0.0, 'ECS_LSTM_Prediction': 0.0, 'EC2_RL_Decision': 'scale down', 'RDS_RL_Decision': 'scale up', 'ECS_RL_Decision': 'scale down'}
 2025-03-11 22:10:19,224 - INFO - Next cycle in 300 seconds
+2025-03-14 01:37:25,108 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 01:37:25,259 - INFO - AWS clients initialized successfully
+2025-03-14 01:37:25,261 - INFO - Database table initialized successfully
+2025-03-14 01:37:25,276 - ERROR - Error loading models: Error(s) in loading state_dict for LSTMModel:
+	Unexpected key(s) in state_dict: "lstm.weight_ih_l2", "lstm.weight_hh_l2", "lstm.bias_ih_l2", "lstm.bias_hh_l2". 
+	size mismatch for lstm.weight_ih_l0: copying a param with shape torch.Size([1024, 32]) from checkpoint, the shape in current model is torch.Size([200, 4]).
+	size mismatch for lstm.weight_hh_l0: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.weight_ih_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.weight_hh_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for fc.weight: copying a param with shape torch.Size([1, 256]) from checkpoint, the shape in current model is torch.Size([1, 50]).
+2025-03-14 01:37:25,276 - ERROR - Monitoring aborted due to model loading failure
+2025-03-14 01:37:25,277 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.119:5002
+2025-03-14 01:37:25,277 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 01:39:57,325 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 01:39:57,472 - INFO - AWS clients initialized successfully
+2025-03-14 01:39:57,474 - INFO - Database table initialized successfully
+2025-03-14 01:39:57,486 - ERROR - Error loading models: Error(s) in loading state_dict for LSTMModel:
+	Unexpected key(s) in state_dict: "lstm.weight_ih_l2", "lstm.weight_hh_l2", "lstm.bias_ih_l2", "lstm.bias_hh_l2". 
+	size mismatch for lstm.weight_ih_l0: copying a param with shape torch.Size([1024, 32]) from checkpoint, the shape in current model is torch.Size([200, 4]).
+	size mismatch for lstm.weight_hh_l0: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.weight_ih_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.weight_hh_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for fc.weight: copying a param with shape torch.Size([1, 256]) from checkpoint, the shape in current model is torch.Size([1, 50]).
+2025-03-14 01:39:57,486 - ERROR - Monitoring aborted due to model loading failure
+2025-03-14 01:39:57,489 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.119:5002
+2025-03-14 01:39:57,489 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 01:46:10,671 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 01:46:10,826 - INFO - AWS clients initialized successfully
+2025-03-14 01:46:10,833 - INFO - Database table initialized successfully
+2025-03-14 01:46:10,844 - ERROR - Error loading models: Error(s) in loading state_dict for LSTMModel:
+	Unexpected key(s) in state_dict: "lstm.weight_ih_l2", "lstm.weight_hh_l2", "lstm.bias_ih_l2", "lstm.bias_hh_l2". 
+	size mismatch for lstm.weight_ih_l0: copying a param with shape torch.Size([1024, 32]) from checkpoint, the shape in current model is torch.Size([200, 4]).
+	size mismatch for lstm.weight_hh_l0: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.weight_ih_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.weight_hh_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for fc.weight: copying a param with shape torch.Size([1, 256]) from checkpoint, the shape in current model is torch.Size([1, 50]).
+2025-03-14 01:46:10,845 - ERROR - Monitoring aborted due to model loading failure
+2025-03-14 01:46:10,849 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.119:5002
+2025-03-14 01:46:10,849 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 14:18:05,784 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 14:18:05,948 - INFO - AWS clients initialized successfully
+2025-03-14 14:18:05,951 - INFO - Database table initialized successfully
+2025-03-14 14:18:05,966 - ERROR - Error loading models: Error(s) in loading state_dict for LSTMModel:
+	Unexpected key(s) in state_dict: "lstm.weight_ih_l2", "lstm.weight_hh_l2", "lstm.bias_ih_l2", "lstm.bias_hh_l2". 
+	size mismatch for lstm.weight_ih_l0: copying a param with shape torch.Size([1024, 32]) from checkpoint, the shape in current model is torch.Size([200, 4]).
+	size mismatch for lstm.weight_hh_l0: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l0: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.weight_ih_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.weight_hh_l1: copying a param with shape torch.Size([1024, 256]) from checkpoint, the shape in current model is torch.Size([200, 50]).
+	size mismatch for lstm.bias_ih_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for lstm.bias_hh_l1: copying a param with shape torch.Size([1024]) from checkpoint, the shape in current model is torch.Size([200]).
+	size mismatch for fc.weight: copying a param with shape torch.Size([1, 256]) from checkpoint, the shape in current model is torch.Size([1, 50]).
+2025-03-14 14:18:05,967 - ERROR - Monitoring aborted due to model loading failure
+2025-03-14 14:18:06,004 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.7:5002
+2025-03-14 14:18:06,004 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 14:27:26,337 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 14:27:26,488 - INFO - AWS clients initialized successfully
+2025-03-14 14:27:26,494 - INFO - Database table initialized successfully
+2025-03-14 14:27:26,506 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.7:5002
+2025-03-14 14:27:26,506 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 14:27:26,507 - ERROR - Error loading models: Error(s) in loading state_dict for LSTMModel:
+	Unexpected key(s) in state_dict: "lstm.weight_ih_l2", "lstm.weight_hh_l2", "lstm.bias_ih_l2", "lstm.bias_hh_l2". 
+	size mismatch for lstm.weight_ih_l0: copying a param with shape torch.Size([1024, 32]) from checkpoint, the shape in current model is torch.Size([1024, 4]).
+2025-03-14 14:27:26,508 - ERROR - Monitoring aborted due to model loading failure
+2025-03-14 15:00:48,883 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 15:00:49,032 - INFO - AWS clients initialized successfully
+2025-03-14 15:00:49,038 - INFO - Database table initialized successfully
+2025-03-14 15:00:49,052 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.7:5002
+2025-03-14 15:00:49,052 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 15:00:49,074 - INFO - Models loaded successfully
+2025-03-14 15:00:49,074 - INFO - Starting monitoring cycle...
+2025-03-14 15:00:49,923 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 15:00:49,981 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:00:50,211 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:00:50,800 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:00:50,800 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:00:50,800 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:00:50,800 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:00:50,801 - ERROR - Error in monitoring cycle: unsupported operand type(s) for +: 'NoneType' and 'float'
+2025-03-14 15:00:50,801 - INFO - Next cycle in 300 seconds
+2025-03-14 15:05:51,949 - INFO - Starting monitoring cycle...
+2025-03-14 15:05:52,987 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 15:05:53,050 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:05:53,294 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:05:53,769 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:05:53,769 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:05:53,769 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:05:53,769 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:05:53,770 - ERROR - Error in monitoring cycle: unsupported operand type(s) for +: 'NoneType' and 'float'
+2025-03-14 15:05:53,770 - INFO - Next cycle in 300 seconds
+2025-03-14 15:10:54,848 - INFO - Starting monitoring cycle...
+2025-03-14 15:10:55,727 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 15:10:55,778 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:10:55,973 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:10:56,465 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:10:56,466 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:10:56,466 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:10:56,466 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:10:56,466 - ERROR - Error in monitoring cycle: unsupported operand type(s) for +: 'NoneType' and 'float'
+2025-03-14 15:10:56,466 - INFO - Next cycle in 300 seconds
+2025-03-14 15:15:57,554 - INFO - Starting monitoring cycle...
+2025-03-14 15:15:58,663 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 15:15:58,719 - INFO - EC2 metrics fetched: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:15:58,963 - INFO - RDS metrics fetched: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:15:59,472 - INFO - ECS metrics fetched: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:15:59,472 - INFO - EC2 Metrics: {'CPUUtilization': None, 'DiskWriteOps': None, 'NetworkIn': None, 'MemoryUtilization': None}
+2025-03-14 15:15:59,472 - INFO - RDS Metrics: {'CPUUtilization': None, 'FreeableMemory': None, 'DatabaseConnections': None, 'WriteIOPS': None}
+2025-03-14 15:15:59,472 - INFO - ECS Metrics: {'CPUUtilization': None, 'MemoryUtilization': None, 'RunningTaskCount': None}
+2025-03-14 15:15:59,472 - ERROR - Error in monitoring cycle: unsupported operand type(s) for +: 'NoneType' and 'float'
+2025-03-14 15:15:59,472 - INFO - Next cycle in 300 seconds
+2025-03-14 15:16:25,813 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 15:16:25,965 - INFO - AWS clients initialized successfully
+2025-03-14 15:16:25,970 - INFO - Database table initialized successfully
+2025-03-14 15:16:25,986 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.7:5002
+2025-03-14 15:16:25,986 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 15:16:26,002 - INFO - Models loaded successfully
+2025-03-14 15:16:26,002 - INFO - Starting monitoring cycle...
+2025-03-14 15:16:26,801 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 15:16:26,860 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-14 15:16:27,103 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-14 15:16:27,495 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0}
+2025-03-14 15:16:27,496 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-14 15:16:27,496 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-14 15:16:27,496 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0}
+2025-03-14 15:16:27,505 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 32, got 16
+2025-03-14 15:16:27,506 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 32, got 16
+2025-03-14 15:16:27,506 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 28, got 12
+2025-03-14 15:16:27,514 - INFO - Decisions - EC2: no change, RDS: scale down, ECS: no change
+2025-03-14 15:16:27,919 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-14 15:16:28,926 - ERROR - AWS ClientError scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-14 15:16:28,983 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-14 15:16:28,984 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 0.0, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.0, 'RDS_LSTM_Prediction': 0.0, 'ECS_LSTM_Prediction': 0.0, 'EC2_RL_Decision': 'no change', 'RDS_RL_Decision': 'scale down', 'ECS_RL_Decision': 'no change'}
+2025-03-14 15:16:28,984 - INFO - Next cycle in 300 seconds
+2025-03-14 19:01:58,983 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 19:01:59,167 - INFO - AWS clients initialized successfully
+2025-03-14 19:01:59,170 - INFO - Database table initialized successfully
+2025-03-14 19:01:59,189 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.3:5002
+2025-03-14 19:01:59,189 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 19:01:59,222 - INFO - Models loaded successfully
+2025-03-14 19:01:59,223 - INFO - Starting monitoring cycle...
+2025-03-14 19:02:00,160 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 19:02:00,217 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-14 19:02:00,460 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-14 19:02:00,963 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0}
+2025-03-14 19:02:00,963 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-14 19:02:00,963 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-14 19:02:00,963 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0}
+2025-03-14 19:02:01,007 - INFO - Decisions - EC2: no change, RDS: scale down, ECS: no change
+2025-03-14 19:02:01,421 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-14 19:02:02,252 - ERROR - AWS ClientError scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: You can't modify a stopped DB instance. Start the DB instance, and then modify it.
+2025-03-14 19:02:02,317 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-14 19:02:02,318 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 0.0, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.3780282735824585, 'RDS_LSTM_Prediction': 0.10030216723680496, 'ECS_LSTM_Prediction': 0.003932709340006113, 'EC2_RL_Decision': 'no change', 'RDS_RL_Decision': 'scale down', 'ECS_RL_Decision': 'no change'}
+2025-03-14 19:02:02,318 - INFO - Next cycle in 300 seconds
+2025-03-14 19:19:52,284 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-14 19:19:52,429 - INFO - AWS clients initialized successfully
+2025-03-14 19:19:52,440 - INFO - Database table initialized successfully
+2025-03-14 19:19:52,462 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.3:5002
+2025-03-14 19:19:52,462 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-14 19:19:52,481 - INFO - Models loaded successfully
+2025-03-14 19:19:52,481 - INFO - Starting monitoring cycle...
+2025-03-14 19:19:53,502 - INFO - Fetched hostname for i-0275ce6aa1f61ca9f: ip-172-31-28-191.ap-southeast-1.compute.internal
+2025-03-14 19:19:53,764 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 15.89615946351799}
+2025-03-14 19:19:54,085 - INFO - RDS metrics fetched: {'CPUUtilization': 2.3299936757314517, 'FreeableMemory': 5762747050.666667, 'DatabaseConnections': 0.0, 'WriteIOPS': 7.546559198876473}
+2025-03-14 19:19:54,976 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0}
+2025-03-14 19:19:54,976 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 15.89615946351799}
+2025-03-14 19:19:54,976 - INFO - RDS Metrics: {'CPUUtilization': 2.3299936757314517, 'FreeableMemory': 5762747050.666667, 'DatabaseConnections': 0.0, 'WriteIOPS': 7.546559198876473}
+2025-03-14 19:19:54,976 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0}
+2025-03-14 19:19:55,012 - INFO - Decisions - EC2: no change, RDS: scale down, ECS: no change
+2025-03-14 19:19:55,509 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-14 19:19:56,167 - ERROR - AWS ClientError scaling RDS database-2: An error occurred (InvalidDBInstanceState) when calling the ModifyDBInstance operation: Database instance is not in available state.
+2025-03-14 19:19:56,231 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-14 19:19:56,231 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 2.3299936757314517, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.26186349987983704, 'RDS_LSTM_Prediction': -0.04574935883283615, 'ECS_LSTM_Prediction': 0.003932709340006113, 'EC2_RL_Decision': 'no change', 'RDS_RL_Decision': 'scale down', 'ECS_RL_Decision': 'no change'}
+2025-03-14 19:19:56,231 - INFO - Next cycle in 300 seconds
