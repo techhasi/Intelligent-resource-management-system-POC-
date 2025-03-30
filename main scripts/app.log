@@ -947,3 +947,656 @@
 2025-03-14 19:19:56,231 - INFO - No scaling action for cluster my-ecs-cluster
 2025-03-14 19:19:56,231 - INFO - Dashboard Predictions: {'EC2_CPU': 0.0, 'RDS_CPU': 2.3299936757314517, 'ECS_CPU': 0.0, 'EC2_LSTM_Prediction': 0.26186349987983704, 'RDS_LSTM_Prediction': -0.04574935883283615, 'ECS_LSTM_Prediction': 0.003932709340006113, 'EC2_RL_Decision': 'no change', 'RDS_RL_Decision': 'scale down', 'ECS_RL_Decision': 'no change'}
 2025-03-14 19:19:56,231 - INFO - Next cycle in 300 seconds
+2025-03-30 10:56:30,113 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 10:56:30,278 - INFO - AWS clients initialized successfully
+2025-03-30 10:57:06,838 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 10:57:06,998 - INFO - AWS clients initialized successfully
+2025-03-30 11:20:44,130 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 11:20:44,279 - INFO - AWS clients initialized successfully
+2025-03-30 11:20:44,286 - INFO - Database tables initialized successfully
+2025-03-30 11:20:44,286 - INFO - Starting server on 0.0.0.0:5002
+2025-03-30 11:20:44,295 - ERROR - Error loading models: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m. 
+	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
+	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
+	WeightsUnpickler error: Unsupported global: GLOBAL sklearn.preprocessing._data.RobustScaler was not an allowed global by default. Please use `torch.serialization.add_safe_globals([RobustScaler])` or the `torch.serialization.safe_globals([RobustScaler])` context manager to allowlist this global if you trust this class/function.
+
+Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
+2025-03-30 11:20:44,295 - ERROR - Error loading models: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m. 
+	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
+	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
+	WeightsUnpickler error: Unsupported global: GLOBAL sklearn.preprocessing._data.RobustScaler was not an allowed global by default. Please use `torch.serialization.add_safe_globals([RobustScaler])` or the `torch.serialization.safe_globals([RobustScaler])` context manager to allowlist this global if you trust this class/function.
+
+Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
+2025-03-30 11:20:44,296 - ERROR - Monitoring aborted due to model loading failure
+2025-03-30 11:20:44,297 - INFO - Models loaded successfully: False
+2025-03-30 11:20:44,297 - WARNING - Monitoring thread not started due to model loading failure
+2025-03-30 11:20:44,348 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.4:5002
+2025-03-30 11:20:44,348 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 11:23:15,704 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 11:23:15,853 - INFO - AWS clients initialized successfully
+2025-03-30 11:23:15,858 - INFO - Database tables initialized successfully
+2025-03-30 11:23:15,858 - INFO - Starting server on 0.0.0.0:5002
+2025-03-30 11:23:17,658 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:23:17,658 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:23:17,703 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:23:17,704 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:23:17,749 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:23:17,749 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:23:17,759 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 11:23:17,759 - INFO - All models loaded successfully
+2025-03-30 11:23:17,759 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 11:23:17,759 - INFO - All models loaded successfully
+2025-03-30 11:23:17,761 - INFO - Starting monitoring cycle...
+2025-03-30 11:23:17,764 - INFO - Models loaded successfully: True
+2025-03-30 11:23:17,764 - ERROR - Error starting server: threads can only be started once
+2025-03-30 11:23:17,766 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 1320, in <module>
+    monitoring_thread.start()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/threading.py", line 967, in start
+    raise RuntimeError("threads can only be started once")
+RuntimeError: threads can only be started once
+
+2025-03-30 11:27:33,315 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 11:27:33,464 - INFO - AWS clients initialized successfully
+2025-03-30 11:27:33,468 - INFO - Database tables initialized successfully
+2025-03-30 11:27:33,468 - INFO - Starting server on 0.0.0.0:5002
+2025-03-30 11:27:34,270 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:27:34,294 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:27:34,320 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:27:34,328 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 11:27:34,328 - INFO - All models loaded successfully
+2025-03-30 11:27:34,329 - INFO - Models loaded successfully: True
+2025-03-30 11:27:34,329 - INFO - Monitoring thread started
+2025-03-30 11:27:34,345 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.4:5002
+2025-03-30 11:27:34,345 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 11:27:34,348 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:27:34,367 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:27:34,384 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:27:34,387 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 11:27:34,387 - INFO - All models loaded successfully
+2025-03-30 11:27:34,389 - INFO - Starting monitoring cycle...
+2025-03-30 11:27:35,280 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:27:35,484 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:27:36,322 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:27:36,322 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:27:36,322 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:27:36,322 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:27:36,333 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 16, got 52
+2025-03-30 11:27:36,337 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 953, in predict_usage
+    prediction = model(input_tensor).detach().numpy()
+                 ~~~~~^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 100, in forward
+    lstm_out, _ = self.lstm(x, (h0, c0))
+                  ~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1120, in forward
+    self.check_forward_args(input, hx, batch_sizes)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1002, in check_forward_args
+    self.check_input(input, batch_sizes)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 314, in check_input
+    raise RuntimeError(
+        f"input.size(-1) must be equal to input_size. Expected {self.input_size}, got {input.size(-1)}"
+    )
+RuntimeError: input.size(-1) must be equal to input_size. Expected 16, got 52
+
+2025-03-30 11:27:36,337 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 16, got 52
+2025-03-30 11:27:36,339 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 953, in predict_usage
+    prediction = model(input_tensor).detach().numpy()
+                 ~~~~~^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 100, in forward
+    lstm_out, _ = self.lstm(x, (h0, c0))
+                  ~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1120, in forward
+    self.check_forward_args(input, hx, batch_sizes)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1002, in check_forward_args
+    self.check_input(input, batch_sizes)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 314, in check_input
+    raise RuntimeError(
+        f"input.size(-1) must be equal to input_size. Expected {self.input_size}, got {input.size(-1)}"
+    )
+RuntimeError: input.size(-1) must be equal to input_size. Expected 16, got 52
+
+2025-03-30 11:27:36,339 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 16, got 52
+2025-03-30 11:27:36,340 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 953, in predict_usage
+    prediction = model(input_tensor).detach().numpy()
+                 ~~~~~^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 100, in forward
+    lstm_out, _ = self.lstm(x, (h0, c0))
+                  ~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1120, in forward
+    self.check_forward_args(input, hx, batch_sizes)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1002, in check_forward_args
+    self.check_input(input, batch_sizes)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 314, in check_input
+    raise RuntimeError(
+        f"input.size(-1) must be equal to input_size. Expected {self.input_size}, got {input.size(-1)}"
+    )
+RuntimeError: input.size(-1) must be equal to input_size. Expected 16, got 52
+
+2025-03-30 11:27:36,341 - INFO - LSTM Predictions - EC2: 0.00, RDS: 0.00, ECS: 0.00
+2025-03-30 11:27:37,201 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 11:27:37,526 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:27:37,626 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 11:27:42,992 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:27:43,390 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:27:43,520 - INFO - No scaling action for RDS database-2
+2025-03-30 11:27:48,750 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:27:49,461 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:27:49,517 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 11:27:54,793 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:27:54,795 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 11:27:54,797 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 11:27:54,797 - INFO - Next cycle in 300 seconds
+2025-03-30 11:32:55,066 - INFO - Starting monitoring cycle...
+2025-03-30 11:32:56,173 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:32:56,405 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:32:57,124 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:32:57,124 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:32:57,125 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:32:57,125 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:32:57,165 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 16, got 52
+2025-03-30 11:32:57,173 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 953, in predict_usage
+    prediction = model(input_tensor).detach().numpy()
+                 ~~~~~^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 100, in forward
+    lstm_out, _ = self.lstm(x, (h0, c0))
+                  ~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1120, in forward
+    self.check_forward_args(input, hx, batch_sizes)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1002, in check_forward_args
+    self.check_input(input, batch_sizes)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 314, in check_input
+    raise RuntimeError(
+        f"input.size(-1) must be equal to input_size. Expected {self.input_size}, got {input.size(-1)}"
+    )
+RuntimeError: input.size(-1) must be equal to input_size. Expected 16, got 52
+
+2025-03-30 11:32:57,174 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 16, got 52
+2025-03-30 11:32:57,175 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 953, in predict_usage
+    prediction = model(input_tensor).detach().numpy()
+                 ~~~~~^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 100, in forward
+    lstm_out, _ = self.lstm(x, (h0, c0))
+                  ~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1120, in forward
+    self.check_forward_args(input, hx, batch_sizes)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1002, in check_forward_args
+    self.check_input(input, batch_sizes)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 314, in check_input
+    raise RuntimeError(
+        f"input.size(-1) must be equal to input_size. Expected {self.input_size}, got {input.size(-1)}"
+    )
+RuntimeError: input.size(-1) must be equal to input_size. Expected 16, got 52
+
+2025-03-30 11:32:57,175 - ERROR - Error making LSTM prediction: input.size(-1) must be equal to input_size. Expected 16, got 52
+2025-03-30 11:32:57,176 - ERROR - Traceback (most recent call last):
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 953, in predict_usage
+    prediction = model(input_tensor).detach().numpy()
+                 ~~~~~^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/aws_flask_dashboard.py", line 100, in forward
+    lstm_out, _ = self.lstm(x, (h0, c0))
+                  ~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1120, in forward
+    self.check_forward_args(input, hx, batch_sizes)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 1002, in check_forward_args
+    self.check_input(input, batch_sizes)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/.venv/lib/python3.13/site-packages/torch/nn/modules/rnn.py", line 314, in check_input
+    raise RuntimeError(
+        f"input.size(-1) must be equal to input_size. Expected {self.input_size}, got {input.size(-1)}"
+    )
+RuntimeError: input.size(-1) must be equal to input_size. Expected 16, got 52
+
+2025-03-30 11:32:57,176 - INFO - LSTM Predictions - EC2: 0.00, RDS: 0.00, ECS: 0.00
+2025-03-30 11:32:58,516 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 11:32:58,830 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:32:58,927 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 11:33:04,273 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:33:04,657 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:33:04,790 - INFO - No scaling action for RDS database-2
+2025-03-30 11:33:10,007 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:33:10,712 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:33:10,772 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 11:33:16,051 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:33:16,053 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 11:33:16,057 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 11:33:16,057 - INFO - Next cycle in 300 seconds
+2025-03-30 11:38:03,208 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 11:38:03,355 - INFO - AWS clients initialized successfully
+2025-03-30 11:38:03,358 - INFO - Database tables initialized successfully
+2025-03-30 11:38:03,358 - INFO - Starting server on 0.0.0.0:5002
+2025-03-30 11:38:04,132 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:38:04,159 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:38:04,188 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:38:04,195 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 11:38:04,196 - INFO - All models loaded successfully
+2025-03-30 11:38:04,196 - INFO - Models loaded successfully: True
+2025-03-30 11:38:04,197 - INFO - Monitoring thread started
+2025-03-30 11:38:04,209 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.4:5002
+2025-03-30 11:38:04,209 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 11:38:04,215 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:38:04,234 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:38:04,253 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 11:38:04,255 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 11:38:04,256 - INFO - All models loaded successfully
+2025-03-30 11:38:04,256 - INFO - Starting monitoring cycle...
+2025-03-30 11:38:05,195 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:38:05,395 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:38:07,410 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:38:07,410 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:38:07,410 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:38:07,410 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:38:07,438 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 11:38:09,186 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 11:38:09,557 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:38:09,724 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 11:38:15,063 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:38:15,448 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:38:15,580 - INFO - No scaling action for RDS database-2
+2025-03-30 11:38:20,804 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:38:21,499 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:38:21,555 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 11:38:26,833 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:38:26,835 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 11:38:26,837 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 11:38:26,837 - INFO - Next cycle in 300 seconds
+2025-03-30 11:43:27,125 - INFO - Starting monitoring cycle...
+2025-03-30 11:43:28,082 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:43:28,278 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:43:28,945 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:43:28,945 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:43:28,945 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:43:28,945 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:43:29,229 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 11:43:30,052 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 11:43:30,390 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:43:30,495 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 11:43:35,860 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 11:43:36,247 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:43:36,391 - INFO - No scaling action for RDS database-2
+2025-03-30 11:43:41,630 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 11:43:42,292 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:43:42,348 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 11:43:47,628 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 11:43:47,632 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 11:43:47,634 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 11:43:47,634 - INFO - Next cycle in 300 seconds
+2025-03-30 12:49:35,881 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-03-30 12:49:36,032 - INFO - AWS clients initialized successfully
+2025-03-30 12:49:36,037 - INFO - Database tables initialized successfully
+2025-03-30 12:49:36,037 - INFO - Starting server on 0.0.0.0:5002
+2025-03-30 12:49:37,359 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 12:49:37,384 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 12:49:37,410 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 12:49:37,418 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 12:49:37,418 - INFO - All models loaded successfully
+2025-03-30 12:49:37,419 - INFO - Models loaded successfully: True
+2025-03-30 12:49:37,419 - INFO - Monitoring thread started
+2025-03-30 12:49:37,433 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.1.4:5002
+2025-03-30 12:49:37,433 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-30 12:49:37,438 - INFO - EC2 LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 12:49:37,458 - INFO - RDS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 12:49:37,478 - INFO - ECS LSTM model loaded: input_size=16, hidden_size=256
+2025-03-30 12:49:37,480 - INFO - RL model (Q-Agent) loaded successfully
+2025-03-30 12:49:37,480 - INFO - All models loaded successfully
+2025-03-30 12:49:37,485 - INFO - Starting monitoring cycle...
+2025-03-30 12:49:38,354 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:49:38,555 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:49:39,305 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:49:39,305 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:49:39,305 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:49:39,305 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:49:39,351 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 12:49:40,319 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 12:49:40,692 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:49:40,777 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 12:49:46,145 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:49:46,530 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:49:46,679 - INFO - No scaling action for RDS database-2
+2025-03-30 12:49:51,897 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:49:52,607 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:49:52,672 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 12:49:58,011 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:49:58,014 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 12:49:58,016 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 12:49:58,016 - INFO - Next cycle in 300 seconds
+2025-03-30 12:54:58,281 - INFO - Starting monitoring cycle...
+2025-03-30 12:54:59,646 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:54:59,881 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:55:00,600 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:55:00,600 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:55:00,600 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:55:00,600 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:55:00,755 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 12:55:01,643 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 12:55:01,982 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:55:02,092 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 12:55:07,436 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 12:55:07,883 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:55:08,015 - INFO - No scaling action for RDS database-2
+2025-03-30 12:55:13,268 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 12:55:13,991 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:55:14,049 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 12:55:19,334 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 12:55:19,335 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 12:55:19,337 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 12:55:19,337 - INFO - Next cycle in 300 seconds
+2025-03-30 13:00:19,614 - INFO - Starting monitoring cycle...
+2025-03-30 13:00:20,600 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:00:20,796 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:00:21,478 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:00:21,478 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:00:21,478 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:00:21,478 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:00:21,555 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:00:22,436 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:00:22,884 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:00:23,005 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:00:28,370 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:00:28,811 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:00:28,949 - INFO - No scaling action for RDS database-2
+2025-03-30 13:00:34,205 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:00:34,918 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:00:34,975 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:00:40,281 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:00:40,283 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:00:40,284 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:00:40,284 - INFO - Next cycle in 300 seconds
+2025-03-30 13:05:40,549 - INFO - Starting monitoring cycle...
+2025-03-30 13:05:41,575 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:05:41,800 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:05:42,608 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:05:42,608 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:05:42,608 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:05:42,608 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:05:42,701 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:05:43,552 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:05:43,953 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:05:44,086 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:05:50,060 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:05:51,621 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:05:51,763 - INFO - No scaling action for RDS database-2
+2025-03-30 13:05:57,021 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:05:57,719 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:05:57,779 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:06:03,091 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:06:03,093 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:06:03,095 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:06:03,095 - INFO - Next cycle in 300 seconds
+2025-03-30 13:11:03,305 - INFO - Starting monitoring cycle...
+2025-03-30 13:11:04,266 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:11:04,467 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:11:05,249 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:11:05,249 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:11:05,249 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:11:05,250 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:11:05,346 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:11:06,258 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:11:06,598 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:11:06,745 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:11:12,075 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:11:12,464 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:11:12,608 - INFO - No scaling action for RDS database-2
+2025-03-30 13:11:17,819 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:11:18,446 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:11:18,504 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:11:23,821 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:11:23,823 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:11:23,826 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:11:23,826 - INFO - Next cycle in 300 seconds
+2025-03-30 13:16:24,130 - INFO - Starting monitoring cycle...
+2025-03-30 13:16:25,140 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:16:25,373 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:16:26,140 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:16:26,140 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:16:26,140 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:16:26,140 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:16:26,272 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:16:27,117 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:16:27,475 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:16:27,642 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:16:33,015 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:16:33,409 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:16:33,548 - INFO - No scaling action for RDS database-2
+2025-03-30 13:16:38,780 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:16:39,486 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:16:39,544 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:16:44,870 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:16:44,873 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:16:44,876 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:16:44,876 - INFO - Next cycle in 300 seconds
+2025-03-30 13:21:45,098 - INFO - Starting monitoring cycle...
+2025-03-30 13:21:46,229 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:21:46,510 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:21:47,308 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:21:47,308 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:21:47,308 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:21:47,308 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:21:47,427 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:21:48,357 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:21:48,729 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:21:48,851 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:21:54,227 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:21:55,627 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:21:55,801 - INFO - No scaling action for RDS database-2
+2025-03-30 13:22:01,066 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:22:01,795 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:22:01,855 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:22:07,160 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:22:07,162 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:22:07,165 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:22:07,165 - INFO - Next cycle in 300 seconds
+2025-03-30 13:27:07,454 - INFO - Starting monitoring cycle...
+2025-03-30 13:27:08,417 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:27:08,623 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:27:09,339 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:27:09,339 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:27:09,339 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:27:09,339 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:27:09,421 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:27:10,604 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:27:10,957 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:27:11,096 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:27:16,452 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:27:16,840 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:27:16,994 - INFO - No scaling action for RDS database-2
+2025-03-30 13:27:22,227 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:27:22,922 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:27:22,985 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:27:28,272 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:27:28,274 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:27:28,276 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:27:28,276 - INFO - Next cycle in 300 seconds
+2025-03-30 13:32:28,734 - INFO - Starting monitoring cycle...
+2025-03-30 13:32:29,633 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:32:29,835 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:32:30,573 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:32:30,574 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:32:30,574 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:32:30,574 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:32:30,668 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:32:31,630 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:32:31,962 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:32:32,054 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:32:37,388 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:32:37,779 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:32:37,911 - INFO - No scaling action for RDS database-2
+2025-03-30 13:32:43,122 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:32:43,741 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:32:43,799 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:32:49,092 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:32:49,095 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:32:49,097 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:32:49,097 - INFO - Next cycle in 300 seconds
+2025-03-30 13:37:49,371 - INFO - Starting monitoring cycle...
+2025-03-30 13:37:50,257 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:37:50,474 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:37:51,323 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:37:51,323 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:37:51,323 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:37:51,323 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:37:51,415 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:37:52,296 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:37:52,671 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:37:52,813 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:37:58,206 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:37:58,571 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:37:58,704 - INFO - No scaling action for RDS database-2
+2025-03-30 13:38:03,926 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:38:04,626 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:38:04,692 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:38:09,982 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:38:09,984 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:38:09,987 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:38:09,987 - INFO - Next cycle in 300 seconds
+2025-03-30 13:43:10,235 - INFO - Starting monitoring cycle...
+2025-03-30 13:43:11,196 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:43:11,403 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:43:12,261 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:43:12,262 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:43:12,262 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:43:12,262 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:43:12,349 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:43:13,300 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:43:13,650 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:43:13,746 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:43:19,119 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:43:19,506 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:43:19,634 - INFO - No scaling action for RDS database-2
+2025-03-30 13:43:24,856 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:43:25,484 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:43:25,544 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:43:30,830 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:43:30,832 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:43:30,835 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:43:30,835 - INFO - Next cycle in 300 seconds
+2025-03-30 13:48:31,093 - INFO - Starting monitoring cycle...
+2025-03-30 13:48:32,163 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:48:32,377 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:48:33,111 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:48:33,111 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:48:33,111 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:48:33,111 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:48:33,308 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:48:34,133 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:48:34,462 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:48:34,569 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:48:40,355 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:48:41,806 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:48:41,963 - INFO - No scaling action for RDS database-2
+2025-03-30 13:48:47,190 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:48:47,905 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:48:47,969 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:48:53,239 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:48:53,241 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:48:53,244 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:48:53,244 - INFO - Next cycle in 300 seconds
+2025-03-30 13:53:53,505 - INFO - Starting monitoring cycle...
+2025-03-30 13:53:54,669 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:53:54,904 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:53:55,695 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:53:55,695 - INFO - EC2 Metrics: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:53:55,695 - INFO - RDS Metrics: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:53:55,695 - INFO - ECS Metrics: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:53:55,794 - INFO - LSTM Predictions - EC2: 51.01, RDS: 51.06, ECS: 49.10
+2025-03-30 13:53:56,627 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-03-30 13:53:56,980 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:53:57,085 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-03-30 13:54:02,496 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 0.0}
+2025-03-30 13:54:02,945 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:54:03,099 - INFO - No scaling action for RDS database-2
+2025-03-30 13:54:08,366 - INFO - RDS metrics fetched: {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+2025-03-30 13:54:09,125 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:54:09,184 - INFO - No scaling action for cluster my-ecs-cluster
+2025-03-30 13:54:14,491 - INFO - ECS metrics fetched: {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-03-30 13:54:14,492 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-03-30 13:54:14,494 - INFO - Dashboard updated with latest predictions and decisions
+2025-03-30 13:54:14,494 - INFO - Next cycle in 300 seconds
