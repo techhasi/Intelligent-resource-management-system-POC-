@@ -1,0 +1,2 @@
+RL Average Reward,Rule-based Average Reward,Improvement (%),ec2 RL Resources,ec2 Rule-based Resources,ec2 Resource Difference,rds RL Resources,rds Rule-based Resources,rds Resource Difference,ecs RL Resources,ecs Rule-based Resources,ecs Resource Difference
+-305.2509949259339,-723.8805107781559,57.83130083198459,1.02,1.36,-0.3400000000000001,1.02,1.38,-0.3599999999999999,1.12,1.38,-0.2599999999999998
