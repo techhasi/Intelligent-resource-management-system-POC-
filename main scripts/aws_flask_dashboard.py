@@ -14,8 +14,10 @@ from botocore.exceptions import ClientError
 from collections import deque
 import os
 import pickle
+import traceback
 
-# Configuration Variables (Edit these as needed)
+# Configuration Variables 
+
 # API Configuration
 API_KEY = os.getenv('API_KEY', 'hasithaw54') 
 FRONTEND_ORIGIN = "http://localhost:3000"
@@ -24,34 +26,34 @@ PORT = 5002
 
 # AWS Configuration
 AWS_REGION = 'ap-southeast-1'
-BOTO_TIMEOUT = 20  # seconds for connect and read timeout
+BOTO_TIMEOUT = 20  
 EC2_INSTANCE_ID = 'i-0275ce6aa1f61ca9f'
 EC2_ASG_NAME = 'ec2-scaling'
 EC2_EXCLUDE_INSTANCE = "i-0d586a401b59d560f"
 RDS_INSTANCE_ID = 'database-2'
 ECS_CLUSTER_NAME = 'my-ecs-cluster'
-ECS_TASK_DEFINITION = 'my-fluctuate-task'
+ECS_TASK_DEFINITION = 'my-highload-task'
 ECS_SUBNETS = ['subnet-022cc8297953122fd']
 ECS_SECURITY_GROUPS = ['sg-0e09152973f9c89ae']
 
-# Updated Model Paths - point to the newly created models
-EC2_MODEL_PATH = '../models/LSTMv5/ec2_lstm_model_improved.pth'  # Updated path for new EC2 LSTM model
-RDS_MODEL_PATH = '../models/LSTMv5/rds_lstm_model_improved.pth'  # Updated path for new RDS LSTM model 
-ECS_MODEL_PATH = '../models/LSTMv5/ecs_lstm_model_improved.pth'  # Updated path for new ECS LSTM model
-RL_MODEL_PATH = '../models/RLv5/enhanced_cloud_q_best.pkl'     # Updated path for new RL model
+# Model Paths
+EC2_MODEL_PATH = '../models/ec2_lstm_model.pth' 
+RDS_MODEL_PATH = '../models/rds_lstm_model.pth' 
+ECS_MODEL_PATH = '../models/ecs_lstm_model.pth'  
+RL_MODEL_PATH = '../models/cloud_dqn.pkl'    
 
 # Model Parameters
-SEQUENCE_LENGTH = 24  # Updated to match LSTMv5.py
-LSTM_HIDDEN_SIZE = 256  # Updated to match LSTMv5.py
-LSTM_NUM_LAYERS = 3    # Updated to match LSTMv5.py 
-LSTM_DROPOUT = 0.3     # Updated to match LSTMv5.py
-BINS_PER_DIM = 8       # From RLv5.py
+SEQUENCE_LENGTH = 24  
+LSTM_HIDDEN_SIZE = 256  
+LSTM_NUM_LAYERS = 3   
+LSTM_DROPOUT = 0.3    
+BINS_PER_DIM = 8       
 
 # Monitoring Configuration
-MONITORING_INTERVAL = 300  # 5 minutes in seconds
+MONITORING_INTERVAL = 300 
 DATABASE_PATH = 'cloud_metrics.db'
 
-# Set up logging to a file
+# Log configuration
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -64,7 +66,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": FRONTEND_ORIGIN}})
 
-# API Key Authentication Decorator
+# API Key Authentication
 def require_api_key(func):
     def wrapper(*args, **kwargs):
         key = request.headers.get("x-api-key")
@@ -75,110 +77,181 @@ def require_api_key(func):
     wrapper.__name__ = func.__name__
     return wrapper
 
-# Updated AttentionLSTM Model Definition - based on LSTMv5.py
-class AttentionLSTM(nn.Module):
+class LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, output_size, dropout=0.2):
-        super(AttentionLSTM, self).__init__()
+        super(LSTM, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        self.dropout = nn.Dropout(dropout)
-        
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, 
-                           dropout=dropout if num_layers > 1 else 0, bidirectional=True)
+
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True,
+                           dropout=dropout if num_layers > 1 else 0)
+
+        self.ln = nn.LayerNorm(hidden_size)
+
         self.attention = nn.Sequential(
-            nn.Linear(hidden_size * 2, hidden_size),
+            nn.Linear(hidden_size, hidden_size),
             nn.Tanh(),
             nn.Linear(hidden_size, 1)
         )
-        self.fc1 = nn.Linear(hidden_size * 2, hidden_size)
-        self.relu = nn.ReLU()
+
+        self.fc1 = nn.Linear(hidden_size, hidden_size)
+        self.ln2 = nn.LayerNorm(hidden_size)
+        self.dropout = nn.Dropout(dropout)
         self.fc2 = nn.Linear(hidden_size, output_size)
-        
+
+        self._init_weights()
+
+    def _init_weights(self):
+        for name, param in self.named_parameters():
+            if 'weight' in name:
+                if 'lstm' in name:
+                    if 'weight_ih' in name:
+                        nn.init.xavier_uniform_(param.data)
+                    elif 'weight_hh' in name:
+                        nn.init.orthogonal_(param.data)
+                elif 'attention' in name or 'fc' in name:
+                    if len(param.shape) >= 2:
+                        nn.init.xavier_uniform_(param.data)
+                    else:
+                        nn.init.uniform_(param.data, -0.1, 0.1)
+            elif 'bias' in name:
+                nn.init.constant_(param.data, 0)
+                if 'lstm' in name and 'bias_hh' in name:
+                    n = param.size(0)
+                    param.data[self.hidden_size:2*self.hidden_size].fill_(1)
+
     def forward(self, x):
-        h0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_size).to(x.device)
-        c0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_size).to(x.device)
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+
         lstm_out, _ = self.lstm(x, (h0, c0))
-        attn_weights = self.attention(lstm_out)
-        attn_weights = torch.softmax(attn_weights, dim=1)
+        lstm_out = self.ln(lstm_out)
+
+        attn_weights = torch.softmax(self.attention(lstm_out), dim=1)
         context = torch.sum(lstm_out * attn_weights, dim=1)
+
         out = self.fc1(context)
-        out = self.relu(out)
+        out = self.ln2(out)
+        out = nn.functional.relu(out)
         out = self.dropout(out)
         out = self.fc2(out)
+
+        out = torch.sigmoid(out)
         return out
 
-# Global Variables
 ec2_lstm_model = None
 rds_lstm_model = None
 ecs_lstm_model = None
 rl_model = None
 rl_scaler = None
 dashboard_predictions = {}
-state_history = deque(maxlen=3)  # For RL input state
+state_history = deque(maxlen=3) 
 ec2_sequence_history = deque(maxlen=SEQUENCE_LENGTH)
 rds_sequence_history = deque(maxlen=SEQUENCE_LENGTH)
 ecs_sequence_history = deque(maxlen=SEQUENCE_LENGTH)
 
-# Model Loading - Updated to handle the new model formats
 def load_models():
     global ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model
+    global ec2_feature_scaler, ec2_target_scaler
+    global rds_feature_scaler, rds_target_scaler  
+    global ecs_feature_scaler, ecs_target_scaler
+    
     try:
-        # Load EC2 LSTM model
-        ec2_checkpoint = torch.load(EC2_MODEL_PATH, map_location=torch.device('cpu'), weights_only=False)
-        ec2_input_size = ec2_checkpoint.get('input_size', 32)
-        ec2_hidden_size = ec2_checkpoint.get('hidden_size', LSTM_HIDDEN_SIZE)
-        ec2_num_layers = ec2_checkpoint.get('num_layers', LSTM_NUM_LAYERS)
+        logger.info("Starting model loading process...")
         
-        ec2_lstm_model = AttentionLSTM(
-            input_size=ec2_input_size, 
-            hidden_size=ec2_hidden_size, 
-            num_layers=ec2_num_layers, 
-            output_size=1, 
-            dropout=LSTM_DROPOUT
+        logger.info(f"Loading EC2 model from {EC2_MODEL_PATH}")
+        ec2_checkpoint = torch.load(EC2_MODEL_PATH, map_location=torch.device('cpu'), weights_only=False)
+        logger.info(f"EC2 model loaded. Architecture: "
+                   f"input_size={ec2_checkpoint['input_size']}, "
+                   f"hidden_size={ec2_checkpoint['hidden_size']}, "
+                   f"num_layers={ec2_checkpoint['num_layers']}, "
+                   f"dropout={ec2_checkpoint['dropout']}")
+        
+        ec2_lstm_model = LSTM(
+            input_size=ec2_checkpoint['input_size'],
+            hidden_size=ec2_checkpoint['hidden_size'],
+            num_layers=ec2_checkpoint['num_layers'],
+            output_size=1,
+            dropout=ec2_checkpoint['dropout']
         )
         ec2_lstm_model.load_state_dict(ec2_checkpoint['model_state_dict'])
         ec2_lstm_model.eval()
-        logger.info(f"EC2 LSTM model loaded: input_size={ec2_input_size}, hidden_size={ec2_hidden_size}")
+        logger.info("EC2 model initialized and set to eval mode")
         
-        # Load RDS LSTM model
+        logger.info(f"Loading RDS model from {RDS_MODEL_PATH}")
         rds_checkpoint = torch.load(RDS_MODEL_PATH, map_location=torch.device('cpu'), weights_only=False)
-        rds_input_size = rds_checkpoint.get('input_size', 32)
-        rds_hidden_size = rds_checkpoint.get('hidden_size', LSTM_HIDDEN_SIZE)
-        rds_num_layers = rds_checkpoint.get('num_layers', LSTM_NUM_LAYERS)
+        logger.info(f"RDS model loaded. Architecture: "
+                   f"input_size={rds_checkpoint['input_size']}, "
+                   f"hidden_size={rds_checkpoint['hidden_size']}, "
+                   f"num_layers={rds_checkpoint['num_layers']}, "
+                   f"dropout={rds_checkpoint['dropout']}")
         
-        rds_lstm_model = AttentionLSTM(
-            input_size=rds_input_size, 
-            hidden_size=rds_hidden_size, 
-            num_layers=rds_num_layers, 
-            output_size=1, 
-            dropout=LSTM_DROPOUT
+        rds_lstm_model = LSTM(
+            input_size=rds_checkpoint['input_size'],
+            hidden_size=rds_checkpoint['hidden_size'],
+            num_layers=rds_checkpoint['num_layers'],
+            output_size=1,
+            dropout=rds_checkpoint['dropout']
         )
         rds_lstm_model.load_state_dict(rds_checkpoint['model_state_dict'])
         rds_lstm_model.eval()
-        logger.info(f"RDS LSTM model loaded: input_size={rds_input_size}, hidden_size={rds_hidden_size}")
+        logger.info("RDS model initialized and set to eval mode")
         
-        # Load ECS LSTM model
+        logger.info(f"Loading ECS model from {ECS_MODEL_PATH}")
         ecs_checkpoint = torch.load(ECS_MODEL_PATH, map_location=torch.device('cpu'), weights_only=False)
-        ecs_input_size = ecs_checkpoint.get('input_size', 28)
-        ecs_hidden_size = ecs_checkpoint.get('hidden_size', LSTM_HIDDEN_SIZE)
-        ecs_num_layers = ecs_checkpoint.get('num_layers', LSTM_NUM_LAYERS)
+        logger.info(f"ECS model loaded. Architecture: "
+                   f"input_size={ecs_checkpoint['input_size']}, "
+                   f"hidden_size={ecs_checkpoint['hidden_size']}, "
+                   f"num_layers={ecs_checkpoint['num_layers']}, "
+                   f"dropout={ecs_checkpoint['dropout']}")
         
-        ecs_lstm_model = AttentionLSTM(
-            input_size=ecs_input_size, 
-            hidden_size=ecs_hidden_size, 
-            num_layers=ecs_num_layers, 
-            output_size=1, 
-            dropout=LSTM_DROPOUT
+        ecs_lstm_model = LSTM(
+            input_size=ecs_checkpoint['input_size'],
+            hidden_size=ecs_checkpoint['hidden_size'],
+            num_layers=ecs_checkpoint['num_layers'],
+            output_size=1,
+            dropout=ecs_checkpoint['dropout']
         )
         ecs_lstm_model.load_state_dict(ecs_checkpoint['model_state_dict'])
         ecs_lstm_model.eval()
-        logger.info(f"ECS LSTM model loaded: input_size={ecs_input_size}, hidden_size={ecs_hidden_size}")
+        logger.info("ECS model initialized and set to eval mode")
         
-        # Load RL model - using pickle as in RLv5.py
+        try:
+            logger.info("Loading feature scalers...")
+            
+            ec2_scaler_path = EC2_MODEL_PATH.replace(".pth", "_scalers.pkl")
+            logger.info(f"Loading EC2 scalers from {ec2_scaler_path}")
+            with open(ec2_scaler_path, 'rb') as f:
+                ec2_scalers = pickle.load(f)
+                ec2_feature_scaler = ec2_scalers['feature_scaler']
+                ec2_target_scaler = ec2_scalers['target_scaler']
+                logger.info("EC2 scalers loaded successfully")
+            
+            rds_scaler_path = RDS_MODEL_PATH.replace(".pth", "_scalers.pkl")
+            logger.info(f"Loading RDS scalers from {rds_scaler_path}")
+            with open(rds_scaler_path, 'rb') as f:
+                rds_scalers = pickle.load(f)
+                rds_feature_scaler = rds_scalers['feature_scaler']
+                rds_target_scaler = rds_scalers['target_scaler']
+                logger.info("RDS scalers loaded successfully")
+            
+            ecs_scaler_path = ECS_MODEL_PATH.replace(".pth", "_scalers.pkl")
+            logger.info(f"Loading ECS scalers from {ecs_scaler_path}")
+            with open(ecs_scaler_path, 'rb') as f:
+                ecs_scalers = pickle.load(f)
+                ecs_feature_scaler = ecs_scalers['feature_scaler']
+                ecs_target_scaler = ecs_scalers['target_scaler']
+                logger.info("ECS scalers loaded successfully")
+                
+        except Exception as scaler_error:
+            logger.error(f"Error loading scalers: {scaler_error}")
+            logger.error(traceback.format_exc())
+            return False
+
+        
         with open(RL_MODEL_PATH, 'rb') as f:
             rl_model_data = pickle.load(f)
             
-        # Create EnhancedQAgent as defined in RLv5.py
         from collections import defaultdict
         class EnhancedQAgent:
             def __init__(self, bins_per_dim=BINS_PER_DIM, action_size_per_service=3, num_services=3):
@@ -186,11 +259,11 @@ def load_models():
                 self.action_size_per_service = action_size_per_service
                 self.num_services = num_services
                 self.q_table = defaultdict(float)
-                self.epsilon = 0.0  # No exploration during production
+                self.epsilon = 0.0 
             
             def load_model(self, data):
                 self.q_table = defaultdict(float, data['q_table'])
-                self.epsilon = 0.0  # Force no exploration
+                self.epsilon = 0.0 
                 return True
                 
             def get_q_value(self, state_tuple, service_idx, action):
@@ -209,17 +282,15 @@ def load_models():
             def safe_discretize_state(self, state):
                 discrete_state = []
                 try:
-                    # Resource counts - finer discretization up to 10 instances
-                    for i in range(3):  # 3 services
+                    for i in range(3): 
                         if i < len(state) and not np.isnan(state[i]):
                             resource_count = min(int(state[i]), 10)
                             bin_idx = min(int((resource_count - 1) * self.bins_per_dim / 10), self.bins_per_dim - 1)
                             discrete_state.append(bin_idx)
                         else:
-                            discrete_state.append(1)  # Default to low-mid range
+                            discrete_state.append(1)
                     
-                    # CPU utilization (normalized to [0,1]) - use finer discretization
-                    for i in range(3, 9):  # CPU utilization dimensions
+                    for i in range(3, 9):
                         if i < len(state) and not np.isnan(state[i]):
                             value = max(0.0, min(1.0, state[i]))
                             bin_idx = min(int(value * self.bins_per_dim), self.bins_per_dim - 1)
@@ -227,7 +298,6 @@ def load_models():
                         else:
                             discrete_state.append(self.bins_per_dim // 2)
                     
-                    # Add time of day awareness (if available)
                     if len(state) > 9 and not np.isnan(state[9]):
                         hour = int(state[9]) % 24
                         time_bin = hour // 6
@@ -235,7 +305,6 @@ def load_models():
                     else:
                         discrete_state.append(2)
                     
-                    # Add day of week awareness (if available)
                     if len(state) > 10 and not np.isnan(state[10]):
                         day = int(state[10]) % 7
                         day_bin = 1 if day >= 5 else 0
@@ -252,19 +321,6 @@ def load_models():
         rl_model = EnhancedQAgent()
         rl_model.load_model(rl_model_data)
         logger.info("RL model (Q-Agent) loaded successfully")
-        
-        # Also load feature and target scalers for each LSTM model if available
-        global ec2_feature_scaler, ec2_target_scaler
-        global rds_feature_scaler, rds_target_scaler
-        global ecs_feature_scaler, ecs_target_scaler
-        
-        ec2_feature_scaler = ec2_checkpoint.get('feature_scaler', None)
-        ec2_target_scaler = ec2_checkpoint.get('target_scaler', None)
-        rds_feature_scaler = rds_checkpoint.get('feature_scaler', None)
-        rds_target_scaler = rds_checkpoint.get('target_scaler', None)
-        ecs_feature_scaler = ecs_checkpoint.get('feature_scaler', None)
-        ecs_target_scaler = ecs_checkpoint.get('target_scaler', None)
-        
         logger.info("All models loaded successfully")
         return True
     except Exception as e:
@@ -272,7 +328,7 @@ def load_models():
         ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model = None, None, None, None
         return False
 
-# Initialize AWS Clients with timeout
+# Initialize AWS Clients
 boto_config = Config(connect_timeout=BOTO_TIMEOUT, read_timeout=BOTO_TIMEOUT)
 try:
     cloudwatch_client = boto3.client('cloudwatch', region_name=AWS_REGION, config=boto_config)
@@ -285,7 +341,7 @@ except Exception as e:
     logger.error(f"Error initializing AWS clients: {e}")
     cloudwatch_client, ec2_client, autoscaling_client, rds_client, ecs_client = None, None, None, None, None
 
-# SQLite Database
+# Database creation
 def create_metrics_table():
     try:
         with sqlite3.connect(DATABASE_PATH) as conn:
@@ -298,7 +354,6 @@ def create_metrics_table():
                                 metric_value REAL
                             )''')
             
-            # Add a table to track scaling decisions and their outcomes
             cursor.execute('''CREATE TABLE IF NOT EXISTS scaling_decisions (
                                 timestamp DATETIME,
                                 service TEXT,
@@ -312,7 +367,6 @@ def create_metrics_table():
     except Exception as e:
         logger.error(f"Error initializing database tables: {e}")
 
-# EC2 Hostname
 def get_ec2_hostname(instance_id):
     try:
         response = ec2_client.describe_instances(InstanceIds=[instance_id])
@@ -322,16 +376,9 @@ def get_ec2_hostname(instance_id):
         logger.error(f"Error fetching hostname for instance {instance_id}: {str(e)}")
         return None
 
-# Scaling Functions - Using updated logic from the RL agent
-def scale_ec2(decision, asg_name=EC2_ASG_NAME):
-    """
-    Scale EC2 instances based on RL decision
-    decision: "scale up", "scale down", or "no change"
-    """
+def scale_ec2(decision, current_metrics=None, asg_name=EC2_ASG_NAME):
     try:
-        # Log CPU before scaling
-        ec2_metrics = fetch_ec2_metrics()
-        cpu_before = ec2_metrics.get('CPUUtilization', 0.0)
+        cpu_before = current_metrics.get('CPUUtilization', 0.0) if current_metrics else 0.0
         
         response = autoscaling_client.describe_auto_scaling_groups(AutoScalingGroupNames=[asg_name])
         current_capacity = response['AutoScalingGroups'][0]['DesiredCapacity']
@@ -353,12 +400,9 @@ def scale_ec2(decision, asg_name=EC2_ASG_NAME):
             result = f"No scaling action for EC2 ASG {asg_name}"
             success = True
         
-        # Wait to measure effect
-        time.sleep(5)
-        ec2_metrics_after = fetch_ec2_metrics()
+        ec2_metrics_after = fetch_ec2_metrics() if not current_metrics else current_metrics
         cpu_after = ec2_metrics_after.get('CPUUtilization', 0.0)
         
-        # Record decision and outcome
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -370,7 +414,6 @@ def scale_ec2(decision, asg_name=EC2_ASG_NAME):
         return result
     except ClientError as e:
         logger.error(f"AWS ClientError scaling EC2 ASG {asg_name}: {e}")
-        # Record failure
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -383,19 +426,13 @@ def scale_ec2(decision, asg_name=EC2_ASG_NAME):
         logger.error(f"Error scaling EC2 ASG {asg_name}: {str(e)}")
         return f"Error scaling EC2 ASG {asg_name}: {str(e)}"
 
-def scale_rds(decision, db_instance_id=RDS_INSTANCE_ID):
-    """
-    Scale RDS instance based on RL decision
-    decision: "scale up", "scale down", or "no change"
-    """
+def scale_rds(decision, current_metrics=None, db_instance_id=RDS_INSTANCE_ID):
     try:
-        # Log CPU before scaling
-        rds_metrics = fetch_rds_metrics()
-        cpu_before = rds_metrics.get('CPUUtilization', 0.0)
+        cpu_before = current_metrics.get('CPUUtilization', 0.0) if current_metrics else 0.0
         
         response = rds_client.describe_db_instances(DBInstanceIdentifier=db_instance_id)
         current_class = response['DBInstances'][0]['DBInstanceClass']
-        instance_classes = ['db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large', 'db.r5.large']
+        instance_classes = ['db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large']
         current_idx = instance_classes.index(current_class) if current_class in instance_classes else 0
         
         if decision == "scale up" and current_idx < len(instance_classes) - 1:
@@ -415,12 +452,9 @@ def scale_rds(decision, db_instance_id=RDS_INSTANCE_ID):
             result = f"No scaling action for RDS {db_instance_id}"
             success = True
         
-        # Wait to measure effect (though RDS scaling is usually not immediate)
-        time.sleep(5)
-        rds_metrics_after = fetch_rds_metrics()
+        rds_metrics_after = fetch_rds_metrics() if not current_metrics else current_metrics
         cpu_after = rds_metrics_after.get('CPUUtilization', 0.0)
         
-        # Record decision and outcome
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -432,7 +466,6 @@ def scale_rds(decision, db_instance_id=RDS_INSTANCE_ID):
         return result
     except ClientError as e:
         logger.error(f"AWS ClientError scaling RDS {db_instance_id}: {e}")
-        # Record failure
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -445,21 +478,18 @@ def scale_rds(decision, db_instance_id=RDS_INSTANCE_ID):
         logger.error(f"Error scaling RDS {db_instance_id}: {str(e)}")
         return f"Error scaling RDS {db_instance_id}: {str(e)}"
 
-def scale_ecs(decision, cluster_name=ECS_CLUSTER_NAME, task_definition=ECS_TASK_DEFINITION):
+def scale_ecs(decision, current_metrics=None, cluster_name=ECS_CLUSTER_NAME, task_definition=ECS_TASK_DEFINITION):
     """
     Scale ECS tasks based on RL decision
     decision: "scale up", "scale down", or "no change"
     """
     try:
-        # Log CPU before scaling
-        ecs_metrics = fetch_ecs_metrics()
-        cpu_before = ecs_metrics.get('CPUUtilization', 0.0)
+        cpu_before = current_metrics.get('CPUUtilization', 0.0) if current_metrics else 0.0
         
         response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus='RUNNING')
         current_count = len(response['taskArns'])
         
         if decision == "scale up":
-            # Use RunTask API to start a new task
             response = ecs_client.run_task(
                 cluster=cluster_name, taskDefinition=task_definition, count=1, launchType='FARGATE',
                 networkConfiguration={'awsvpcConfiguration': {'subnets': ECS_SUBNETS, 'securityGroups': ECS_SECURITY_GROUPS, 'assignPublicIp': 'ENABLED'}}
@@ -484,12 +514,9 @@ def scale_ecs(decision, cluster_name=ECS_CLUSTER_NAME, task_definition=ECS_TASK_
             result = f"No scaling action for cluster {cluster_name}"
             success = True
         
-        # Wait to measure effect
-        time.sleep(5)
-        ecs_metrics_after = fetch_ecs_metrics()
+        ecs_metrics_after = fetch_ecs_metrics() if not current_metrics else current_metrics
         cpu_after = ecs_metrics_after.get('CPUUtilization', 0.0)
         
-        # Record decision and outcome
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -501,7 +528,6 @@ def scale_ecs(decision, cluster_name=ECS_CLUSTER_NAME, task_definition=ECS_TASK_
         return result
     except ClientError as e:
         logger.error(f"AWS ClientError scaling ECS cluster {cluster_name}: {e}")
-        # Record failure
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -569,8 +595,6 @@ def stop_ecs(cluster_name=ECS_CLUSTER_NAME):
         logger.error(f"Error stopping ECS cluster {cluster_name}: {str(e)}")
         return f"Error stopping ECS cluster {cluster_name}: {str(e)}"
 
-# Fetch Metrics - using the CloudWatch API
-# Fetch Metrics - using the CloudWatch API
 def fetch_ec2_metrics(instance_id=EC2_INSTANCE_ID):
     try:
         now = datetime.now(timezone.utc)
@@ -597,7 +621,6 @@ def fetch_ec2_metrics(instance_id=EC2_INSTANCE_ID):
         else:
             metrics_data['MemoryUtilization'] = 0.0
         
-        # Store metrics in database
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             for metric_name, metric_value in metrics_data.items():
@@ -622,12 +645,16 @@ def fetch_rds_metrics(db_instance_id=RDS_INSTANCE_ID):
         
         for metric in metric_names:
             response = cloudwatch_client.get_metric_statistics(
-                Namespace='AWS/RDS', MetricName=metric, Dimensions=[{'Name': 'DBInstanceIdentifier', 'Value': db_instance_id}],
-                StartTime=start_time, EndTime=now, Period=300, Statistics=['Average']
+                Namespace='AWS/RDS',
+                MetricName=metric,
+                Dimensions=[{'Name': 'DBInstanceIdentifier', 'Value': db_instance_id}],
+                StartTime=start_time,
+                EndTime=now,
+                Period=300,
+                Statistics=['Average']
             )
             metrics_data[metric] = float(sorted(response['Datapoints'], key=lambda x: x['Timestamp'], reverse=True)[0]['Average']) if response['Datapoints'] else 0.0
         
-        # Store metrics in database
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             for metric_name, metric_value in metrics_data.items():
@@ -639,34 +666,39 @@ def fetch_rds_metrics(db_instance_id=RDS_INSTANCE_ID):
             
         logger.info(f"RDS metrics fetched: {metrics_data}")
         return metrics_data
+        
     except Exception as e:
         logger.error(f"Error fetching RDS metrics for {db_instance_id}: {str(e)}")
-        return {'CPUUtilization': 0.0, 'FreeableMemory': 0.0, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.0}
+        return {'CPUUtilization': 0.0,'FreeableMemory': 0.0,'DatabaseConnections': 0.0,'WriteIOPS': 0.0}
 
 def fetch_ecs_metrics(cluster_name=ECS_CLUSTER_NAME):
     try:
         now = datetime.now(timezone.utc)
         start_time = now - timedelta(minutes=5)
         metrics_data = {}
-        metric_names = ['CPUUtilization', 'MemoryUtilization']
+        metric_names = ['CpuUtilized', 'MemoryUtilized']
         
         for metric in metric_names:
             response = cloudwatch_client.get_metric_statistics(
-                Namespace='AWS/ECS', MetricName=metric, Dimensions=[{'Name': 'ClusterName', 'Value': cluster_name}],
+                Namespace='ECS/ContainerInsights', MetricName=metric, Dimensions=[{'Name': 'ClusterName', 'Value': cluster_name}],
                 StartTime=start_time, EndTime=now, Period=300, Statistics=['Average']
             )
             metrics_data[metric] = float(sorted(response['Datapoints'], key=lambda x: x['Timestamp'], reverse=True)[0]['Average']) if response['Datapoints'] else 0.0
         
-        # Get running task count
+        if 'CpuUtilized' in metrics_data:
+            metrics_data['CPUUtilization'] = (metrics_data['CpuUtilized'] / 256.0) * 100.0
+        
+        if 'MemoryUtilized' in metrics_data:
+            metrics_data['MemoryUtilization'] = (metrics_data['MemoryUtilized'] / 512.0) * 100.0
+        
         response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus='RUNNING')
         task_count = len(response['taskArns'])
         metrics_data['RunningTaskCount'] = float(task_count) if task_count > 0 else 0.0
         
-        # Add network metrics if available
         try:
             for network_metric in ['NetworkRxBytes', 'NetworkTxBytes']:
                 response = cloudwatch_client.get_metric_statistics(
-                    Namespace='AWS/ECS', MetricName=network_metric, Dimensions=[{'Name': 'ClusterName', 'Value': cluster_name}],
+                    Namespace='ECS/ContainerInsights', MetricName=network_metric, Dimensions=[{'Name': 'ClusterName', 'Value': cluster_name}],
                     StartTime=start_time, EndTime=now, Period=300, Statistics=['Average']
                 )
                 metrics_data[network_metric] = float(sorted(response['Datapoints'], key=lambda x: x['Timestamp'], reverse=True)[0]['Average']) if response['Datapoints'] else 0.0
@@ -675,7 +707,6 @@ def fetch_ecs_metrics(cluster_name=ECS_CLUSTER_NAME):
             metrics_data['NetworkRxBytes'] = 0.0
             metrics_data['NetworkTxBytes'] = 0.0
             
-        # Store metrics in database
         with sqlite3.connect(DATABASE_PATH) as conn:
             cursor = conn.cursor()
             for metric_name, metric_value in metrics_data.items():
@@ -692,173 +723,108 @@ def fetch_ecs_metrics(cluster_name=ECS_CLUSTER_NAME):
         return {'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
 
 def prepare_lstm_input(metrics, service, sequence_history):
-    """
-    Prepare input data to match exactly the features used during model training
-    """
     now = datetime.now()
     hour = float(now.hour)
     day_of_week = float(now.weekday())
     day_of_month = float(now.day)
     
-    # Feature engineering to match training data
-    if service == 'EC2':
-        # Base metrics from CloudWatch
-        cpu = float(metrics.get('CPUUtilization', 0.0))
-        mem = float(metrics.get('MemoryUtilization', 0.0))
-        disk = float(metrics.get('DiskWriteOps', 0.0))
-        network = float(metrics.get('NetworkIn', 0.0))
-        
-        # Get historical CPU for lag features
-        cpu_history = []
-        if len(sequence_history) > 0:
-            for entry in list(sequence_history):
-                if isinstance(entry, (list, tuple)) and len(entry) > 0:
-                    cpu_history.append(entry[0] if entry[0] is not None else 0.0)
-        
-        # Ensure we have at least 3 values for lag calculation
-        while len(cpu_history) < 3:
-            cpu_history.insert(0, cpu)
+    try:
+        logger.debug(f"Preparing LSTM input for {service}")
+
+        if service == 'EC2':
+            # Base metrics
+            cpu = float(metrics.get('CPUUtilization', 0.0))
+            mem = float(metrics.get('MemoryUtilization', 0.0))
+            disk = float(metrics.get('DiskWriteOps', 0.0))
+            network = float(metrics.get('NetworkIn', 0.0))
             
-        # Calculate features matching training data
-        cpu_lag_1 = cpu_history[-1] if len(cpu_history) > 0 else cpu
-        cpu_lag_2 = cpu_history[-2] if len(cpu_history) > 1 else cpu
-        cpu_diff_1 = cpu - cpu_lag_1
-        cpu_diff_3 = cpu - cpu_history[-3] if len(cpu_history) > 2 else 0.0
-        
-        # Ratio calculations
-        cpu_mem_ratio = cpu / (mem + 1e-8)
-        cpu_disk_ratio = cpu / (disk + 1e-8) 
-        cpu_network_ratio = cpu / (network + 1e-8)
-        
-        # Rolling statistics from recent history
-        cpu_roll_6h = np.mean(cpu_history) if cpu_history else cpu
-        cpu_std_6h = np.std(cpu_history) if len(cpu_history) > 1 else 0.0
-        
-        # Quantiles
-        cpu_q25 = np.percentile(cpu_history, 25) if len(cpu_history) >= 4 else cpu * 0.8
-        cpu_q75 = np.percentile(cpu_history, 75) if len(cpu_history) >= 4 else cpu * 1.2
-        
-        # Time encoding
-        day_of_month_sin = np.sin(2 * np.pi * day_of_month / 31)
-        
-        # Assemble features in exact order matching training data
-        current_data = [
-            cpu_lag_1, cpu_diff_1, cpu_disk_ratio, cpu_diff_3, 
-            cpu_mem_ratio, cpu_network_ratio, disk, mem, 
-            network, cpu_std_6h, cpu_roll_6h, cpu_lag_2, 
-            cpu_q25, cpu_q75, day_of_month_sin, cpu
-        ]
-    
-    elif service == 'RDS':
-        # Assuming RDS uses similar features to EC2 based on the feature list
-        cpu = float(metrics.get('CPUUtilization', 0.0))
-        memory = float(metrics.get('FreeableMemory', 0.0)) 
-        conn = float(metrics.get('DatabaseConnections', 0.0))
-        io = float(metrics.get('WriteIOPS', 0.0))
-        
-        # Get historical CPU for lag features
-        cpu_history = []
-        if len(sequence_history) > 0:
-            for entry in list(sequence_history):
-                if isinstance(entry, (list, tuple)) and len(entry) > 0:
-                    cpu_history.append(entry[0] if entry[0] is not None else 0.0)
-        
-        # Ensure we have at least 3 values for lag calculation
-        while len(cpu_history) < 3:
-            cpu_history.insert(0, cpu)
+            current_data = [
+                cpu,  
+                float(sequence_history[-1][0]) if sequence_history else cpu,  
+                cpu - (float(sequence_history[-1][0]) if sequence_history else cpu), 
+                disk,  
+                mem,  
+                network,  
+                np.mean([h[0] for h in list(sequence_history)[-6:]]) if sequence_history else cpu,  
+                np.std([h[0] for h in list(sequence_history)[-6:]]) if len(sequence_history) >= 2 else 0.0, 
+                float(sequence_history[-2][0]) if len(sequence_history) >= 2 else cpu,  
+                cpu - (float(sequence_history[-3][0]) if len(sequence_history) >= 3 else cpu), 
+                np.log1p(cpu) / (np.log1p(disk) + 1e-8),  
+                np.log1p(cpu) / (np.log1p(mem) + 1e-8),   
+                np.sin(2 * np.pi * day_of_month / 31),     
+                np.cos(2 * np.pi * day_of_month / 31)     
+            ]
             
-        # Calculate features matching training data (similar to EC2)
-        cpu_lag_1 = cpu_history[-1] if len(cpu_history) > 0 else cpu
-        cpu_lag_2 = cpu_history[-2] if len(cpu_history) > 1 else cpu
-        cpu_diff_1 = cpu - cpu_lag_1
-        cpu_diff_3 = cpu - cpu_history[-3] if len(cpu_history) > 2 else 0.0
-        
-        # Ratio calculations
-        memory_usage = 100 - (memory / 1000)  # Approximate - adjust based on your data
-        cpu_mem_ratio = cpu / (memory_usage + 1e-8)
-        cpu_io_ratio = cpu / (io + 1e-8)  # Similar to disk ratio
-        cpu_conn_ratio = cpu / (conn + 1e-8)  # Similar to network ratio
-        
-        # Rolling statistics from recent history
-        cpu_roll_6h = np.mean(cpu_history) if cpu_history else cpu
-        cpu_std_6h = np.std(cpu_history) if len(cpu_history) > 1 else 0.0
-        
-        # Quantiles
-        cpu_q25 = np.percentile(cpu_history, 25) if len(cpu_history) >= 4 else cpu * 0.8
-        cpu_q75 = np.percentile(cpu_history, 75) if len(cpu_history) >= 4 else cpu * 1.2
-        
-        # Time encoding
-        day_of_month_sin = np.sin(2 * np.pi * day_of_month / 31)
-        
-        # Assemble features in exact order matching training data
-        current_data = [
-            cpu_lag_1, cpu_diff_1, cpu_io_ratio, cpu_diff_3, 
-            cpu_mem_ratio, cpu_conn_ratio, io, memory, 
-            conn, cpu_std_6h, cpu_roll_6h, cpu_lag_2, 
-            cpu_q25, cpu_q75, day_of_month_sin, cpu
-        ]
-    
-    elif service == 'ECS':
-        # Assuming ECS uses similar features to EC2 based on the feature list
-        cpu = float(metrics.get('CPUUtilization', 0.0))
-        mem = float(metrics.get('MemoryUtilization', 0.0))
-        tasks = float(metrics.get('RunningTaskCount', 0.0))
-        network = float(metrics.get('NetworkRxBytes', 0.0))
-        
-        # Get historical CPU for lag features
-        cpu_history = []
-        if len(sequence_history) > 0:
-            for entry in list(sequence_history):
-                if isinstance(entry, (list, tuple)) and len(entry) > 0:
-                    cpu_history.append(entry[0] if entry[0] is not None else 0.0)
-        
-        # Ensure we have at least 3 values for lag calculation
-        while len(cpu_history) < 3:
-            cpu_history.insert(0, cpu)
+        elif service == 'RDS':
+            cpu = float(metrics.get('CPUUtilization', 0.0))
+            memory = float(metrics.get('FreeableMemory', 0.0)) 
+            conn = float(metrics.get('DatabaseConnections', 0.0))
+            io = float(metrics.get('WriteIOPS', 0.0))
             
-        # Calculate features matching training data (similar to EC2)
-        cpu_lag_1 = cpu_history[-1] if len(cpu_history) > 0 else cpu
-        cpu_lag_2 = cpu_history[-2] if len(cpu_history) > 1 else cpu
-        cpu_diff_1 = cpu - cpu_lag_1
-        cpu_diff_3 = cpu - cpu_history[-3] if len(cpu_history) > 2 else 0.0
+            memory_usage = 100 - (memory / 1000)  
+            current_data = [
+                cpu,  
+                float(sequence_history[-1][0]) if sequence_history else cpu, 
+                cpu - (float(sequence_history[-1][0]) if sequence_history else cpu), 
+                io,  
+                memory_usage, 
+                conn,  
+                np.mean([h[0] for h in list(sequence_history)[-6:]]) if sequence_history else cpu, 
+                np.std([h[0] for h in list(sequence_history)[-6:]]) if len(sequence_history) >= 2 else 0.0, 
+                float(sequence_history[-2][0]) if len(sequence_history) >= 2 else cpu, 
+                cpu - (float(sequence_history[-3][0]) if len(sequence_history) >= 3 else cpu),
+                np.log1p(cpu) / (np.log1p(io) + 1e-8),    
+                np.log1p(cpu) / (np.log1p(memory_usage) + 1e-8),
+                np.percentile([h[0] for h in list(sequence_history)[-6:]], 25) if len(sequence_history) >= 4 else cpu * 0.8,  
+                np.percentile([h[0] for h in list(sequence_history)[-6:]], 75) if len(sequence_history) >= 4 else cpu * 1.2, 
+                np.sin(2 * np.pi * hour / 24),  
+                np.cos(2 * np.pi * hour / 24), 
+                np.sin(2 * np.pi * day_of_month / 31) 
+            ]
+            
+        elif service == 'ECS':
+            cpu = float(metrics.get('CPUUtilization', 0.0))
+            mem = float(metrics.get('MemoryUtilization', 0.0))
+            tasks = float(metrics.get('RunningTaskCount', 0.0))
+            network = float(metrics.get('NetworkRxBytes', 0.0))
+            
+            current_data = [
+                cpu,
+                float(sequence_history[-1][0]) if sequence_history else cpu,
+                cpu - (float(sequence_history[-1][0]) if sequence_history else cpu),
+                tasks,  
+                mem, 
+                network, 
+                np.mean([h[0] for h in list(sequence_history)[-6:]]) if sequence_history else cpu,
+                np.std([h[0] for h in list(sequence_history)[-6:]]) if len(sequence_history) >= 2 else 0.0,
+                float(sequence_history[-2][0]) if len(sequence_history) >= 2 else cpu, 
+                cpu - (float(sequence_history[-3][0]) if len(sequence_history) >= 3 else cpu), 
+                np.log1p(cpu) / (np.log1p(tasks) + 1e-8),  
+                np.log1p(cpu) / (np.log1p(mem) + 1e-8),   
+                np.percentile([h[0] for h in list(sequence_history)[-6:]], 10) if len(sequence_history) >= 4 else cpu * 0.9,  
+                np.percentile([h[0] for h in list(sequence_history)[-6:]], 25) if len(sequence_history) >= 4 else cpu * 0.8, 
+                np.percentile([h[0] for h in list(sequence_history)[-6:]], 75) if len(sequence_history) >= 4 else cpu * 1.2, 
+                np.percentile([h[0] for h in list(sequence_history)[-6:]], 90) if len(sequence_history) >= 4 else cpu * 1.1, 
+                np.sin(2 * np.pi * hour / 24),     
+                np.cos(2 * np.pi * hour / 24)      
+            ]
+
+        expected_sizes = {'EC2': 14, 'RDS': 17, 'ECS': 18}
+        if len(current_data) != expected_sizes[service]:
+            raise ValueError(f"Feature dimension mismatch for {service}. Expected {expected_sizes[service]}, got {len(current_data)}")
+
+        current_data = [0.0 if x is None or np.isnan(x) else float(x) for x in current_data]
         
-        # Ratio calculations
-        cpu_mem_ratio = cpu / (mem + 1e-8)
-        cpu_task_ratio = cpu / (tasks + 1e-8)  # Similar to disk ratio
-        cpu_network_ratio = cpu / (network + 1e-8)
+        sequence_history.append(current_data[:])
+        logger.debug(f"Prepared {service} input with {len(current_data)} features")
         
-        # Rolling statistics from recent history
-        cpu_roll_6h = np.mean(cpu_history) if cpu_history else cpu
-        cpu_std_6h = np.std(cpu_history) if len(cpu_history) > 1 else 0.0
+        return np.array([current_data], dtype=np.float32)
         
-        # Quantiles
-        cpu_q25 = np.percentile(cpu_history, 25) if len(cpu_history) >= 4 else cpu * 0.8
-        cpu_q75 = np.percentile(cpu_history, 75) if len(cpu_history) >= 4 else cpu * 1.2
-        
-        # Time encoding
-        day_of_month_sin = np.sin(2 * np.pi * day_of_month / 31)
-        
-        # Assemble features in exact order matching training data
-        current_data = [
-            cpu_lag_1, cpu_diff_1, cpu_task_ratio, cpu_diff_3, 
-            cpu_mem_ratio, cpu_network_ratio, tasks, mem, 
-            network, cpu_std_6h, cpu_roll_6h, cpu_lag_2, 
-            cpu_q25, cpu_q75, day_of_month_sin, cpu
-        ]
-    
-    # Ensure no None or NaN values
-    current_data = [0.0 if x is None or np.isnan(x) else float(x) for x in current_data]
-    
-    # Add to sequence history
-    sequence_history.append(current_data[:]) # Create a copy
-    
-    # Create input tensor from a single timestep
-    # We don't need to build a sequence with lag features - the model was trained using 
-    # features that already include lags as individual columns
-    input_array = np.array([current_data], dtype=np.float32)
-    
-    logger.debug(f"{service} LSTM input shape: {input_array.shape}")
-    return input_array
+    except Exception as e:
+        logger.error(f"Error preparing {service} input: {str(e)}")
+        logger.error(traceback.format_exc())
+        default_size = {'EC2': 14, 'RDS': 17, 'ECS': 18}[service]
+        return np.zeros((1, default_size), dtype=np.float32)
 
 # API Endpoints
 @app.route('/')
@@ -882,24 +848,6 @@ def get_predictions():
     }
     logger.info(f"Returning predictions: {serializable_predictions}")
     return jsonify(serializable_predictions)
-
-@app.route('/metrics', methods=['GET'])
-@require_api_key
-def get_metrics():
-    try:
-        ec2_metrics = fetch_ec2_metrics()
-        rds_metrics = fetch_rds_metrics()
-        ecs_metrics = fetch_ecs_metrics()
-        
-        return jsonify({
-            "ec2": {k: float(v) if isinstance(v, (np.floating, np.integer)) else v for k, v in ec2_metrics.items()},
-            "rds": {k: float(v) if isinstance(v, (np.floating, np.integer)) else v for k, v in rds_metrics.items()},
-            "ecs": {k: float(v) if isinstance(v, (np.floating, np.integer)) else v for k, v in ecs_metrics.items()},
-            "timestamp": datetime.now().isoformat()
-        })
-    except Exception as e:
-        logger.error(f"Error getting metrics: {e}")
-        return jsonify({"error": str(e)}), 500
 
 @app.route('/stop/ec2', methods=['POST'])
 @require_api_key
@@ -952,54 +900,55 @@ def api_scale_ecs():
     logger.info(f"Scale ECS result: {result}")
     return jsonify({"message": result})
 
-# Monitoring Thread - Updated to match new model formats
+# Monitoring Thread 
 def monitor_and_scale():
     global dashboard_predictions, state_history, ec2_sequence_history, rds_sequence_history, ecs_sequence_history
     
-    import traceback
-    
-    def predict_usage(model, input_data, target_scaler=None):
-        """
-        Make LSTM predictions and denormalize if target_scaler is provided
-        """
+    def predict_usage(model, input_data, target_scaler=None, current_metrics=None, service_type=None):
+        if current_metrics:
+            if service_type in ['EC2', 'ECS'] and current_metrics.get('CPUUtilization', 1) == 0:
+                logger.info(f"{service_type} service stopped - forcing 0% prediction")
+                return 0.0
+                
+            if service_type == 'RDS' and current_metrics.get('DatabaseConnections', 1) == 0 and current_metrics.get('WriteIOPS', 1) == 0:
+                logger.info(f"RDS appears idle - forcing 0% prediction")
+                return 0.0
+
         if model is None or not input_data.size:
             logger.warning("No model or invalid input data for prediction")
             return 0.0
+            
         try:
             model.eval()
             input_tensor = torch.tensor(input_data, dtype=torch.float32).unsqueeze(0)
+            
             with torch.no_grad():
                 prediction = model(input_tensor).detach().numpy()
-            
-            # If we have a target scaler, use it to convert the prediction back to original scale
-            if target_scaler is not None:
-                prediction = target_scaler.inverse_transform(prediction)
-            
-            return float(prediction.flatten()[0])
+                
+                if target_scaler is not None:
+                    prediction = target_scaler.inverse_transform(prediction)
+                
+                prediction = np.clip(prediction, 0, 100)
+                return float(prediction.flatten()[0])
+                
         except Exception as e:
-            logger.error(f"Error making LSTM prediction: {e}")
+            logger.error(f"Prediction error for {service_type}: {e}")
             logger.error(traceback.format_exc())
             return 0.0
 
     def safe_discretize_state(state):
-        """
-        Discretize the continuous state space for RL model
-        This mirrors the function in RLv5.py
-        """
         discrete_state = []
         
         try:
-            # Resource counts - finer discretization up to 10 instances
-            for i in range(3):  # 3 services
+            for i in range(3): 
                 if i < len(state) and not np.isnan(state[i]):
                     resource_count = min(int(state[i]), 10)
                     bin_idx = min(int((resource_count - 1) * BINS_PER_DIM / 10), BINS_PER_DIM - 1)
                     discrete_state.append(bin_idx)
                 else:
-                    discrete_state.append(1)  # Default to low-mid range
+                    discrete_state.append(1) 
             
-            # CPU utilization (normalized to [0,1]) - use finer discretization
-            for i in range(3, 9):  # CPU utilization dimensions
+            for i in range(3, 9): 
                 if i < len(state) and not np.isnan(state[i]):
                     value = max(0.0, min(1.0, state[i]))
                     bin_idx = min(int(value * BINS_PER_DIM), BINS_PER_DIM - 1)
@@ -1007,7 +956,6 @@ def monitor_and_scale():
                 else:
                     discrete_state.append(BINS_PER_DIM // 2)
             
-            # Add time of day awareness (if available)
             if len(state) > 9 and not np.isnan(state[9]):
                 hour = int(state[9]) % 24
                 time_bin = hour // 6
@@ -1015,7 +963,6 @@ def monitor_and_scale():
             else:
                 discrete_state.append(2)
             
-            # Add day of week awareness (if available)
             if len(state) > 10 and not np.isnan(state[10]):
                 day = int(state[10]) % 7
                 day_bin = 1 if day >= 5 else 0
@@ -1026,159 +973,96 @@ def monitor_and_scale():
         except Exception as e:
             logger.error(f"Error in discretize_state: {e}")
             logger.error(traceback.format_exc())
-            # Return a safe default state if any error occurs
             return tuple([1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0])
         
         return tuple(discrete_state)
 
-    # Load models if not already loaded
-    models_loaded = load_models()
-
-    if not models_loaded:
-        logger.error("Monitoring aborted due to model loading failure")
-        return
-
-    # For the new RL model from RLv5.py, the action mapping is:
-    # 0: Scale down, 1: No change, 2: Scale up (different from original mapping)
     rl_decision_map = {0: "scale down", 1: "no change", 2: "scale up"}
     cycle_interval = MONITORING_INTERVAL
 
-    # Initialize history structures with zeros
-    # For RL model state
     state_history.extend([np.array([0.0, 0.0, 0.0])] * 3)
     
-    # For LSTM sequence history - updated for more features
-    ec2_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH)  # Base + engineered features
-    rds_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH)  # Base + engineered features
-    ecs_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH)  # Base + engineered features
+    ec2_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH) 
+    rds_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH)  
+    ecs_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH) 
 
     while True:
         logger.info("Starting monitoring cycle...")
         try:
-            # Fetch current metrics
             ec2_metrics = fetch_ec2_metrics()
             rds_metrics = fetch_rds_metrics()
             ecs_metrics = fetch_ecs_metrics()
-            logger.info(f"EC2 Metrics: {ec2_metrics}")
-            logger.info(f"RDS Metrics: {rds_metrics}")
-            logger.info(f"ECS Metrics: {ecs_metrics}")
 
-            # Prepare input for LSTM models with the updated feature engineering
             ec2_input = prepare_lstm_input(ec2_metrics, 'EC2', ec2_sequence_history)
             rds_input = prepare_lstm_input(rds_metrics, 'RDS', rds_sequence_history)
             ecs_input = prepare_lstm_input(ecs_metrics, 'ECS', ecs_sequence_history)
 
-            # Make predictions using LSTM models with target scaling
-            ec2_pred = predict_usage(ec2_lstm_model, ec2_input, ec2_target_scaler)
-            rds_pred = predict_usage(rds_lstm_model, rds_input, rds_target_scaler)
-            ecs_pred = predict_usage(ecs_lstm_model, ecs_input, ecs_target_scaler)
+            ec2_pred = predict_usage(ec2_lstm_model, ec2_input, ec2_target_scaler, ec2_metrics, 'EC2')
+            rds_pred = predict_usage(rds_lstm_model, rds_input, rds_target_scaler, rds_metrics, 'RDS') 
+            ecs_pred = predict_usage(ecs_lstm_model, ecs_input, ecs_target_scaler, ecs_metrics, 'ECS')
             
-            # Log predictions
             logger.info(f"LSTM Predictions - EC2: {ec2_pred:.2f}, RDS: {rds_pred:.2f}, ECS: {ecs_pred:.2f}")
 
-            # Prepare state for the RL agent
-            # Get current resource counts from ASG and current services
             try:
-                # Get EC2 instance count
                 ec2_response = autoscaling_client.describe_auto_scaling_groups(AutoScalingGroupNames=[EC2_ASG_NAME])
                 ec2_count = float(ec2_response['AutoScalingGroups'][0]['DesiredCapacity'])
                 
-                # Get RDS instance type as a numeric value (0=micro, 1=small, 2=medium, etc.)
                 rds_response = rds_client.describe_db_instances(DBInstanceIdentifier=RDS_INSTANCE_ID)
                 current_class = rds_response['DBInstances'][0]['DBInstanceClass']
                 instance_classes = ['db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large', 'db.r5.large']
                 rds_count = float(instance_classes.index(current_class) if current_class in instance_classes else 0)
                 
-                # Get ECS task count
                 ecs_response = ecs_client.list_tasks(cluster=ECS_CLUSTER_NAME, desiredStatus='RUNNING')
                 ecs_count = float(len(ecs_response['taskArns']))
             except Exception as e:
                 logger.error(f"Error getting resource counts: {e}")
                 logger.error(traceback.format_exc())
-                # Default values if we can't get actual counts
                 ec2_count, rds_count, ecs_count = 2.0, 1.0, 2.0
             
-            # Normalize CPU values for state
             ec2_cpu = float(ec2_metrics.get('CPUUtilization', 0.0)) / 100.0
             rds_cpu = float(rds_metrics.get('CPUUtilization', 0.0)) / 100.0
             ecs_cpu = float(ecs_metrics.get('CPUUtilization', 0.0)) / 100.0
             
-            # Current raw state includes resource counts and CPU values
+            ec2_pred_norm = min(1.0, max(0.0, ec2_pred/100.0))
+            rds_pred_norm = min(1.0, max(0.0, rds_pred/100.0))
+            ecs_pred_norm = min(1.0, max(0.0, ecs_pred/100.0))
+            
             current_state = np.array([
-                ec2_count, rds_count, ecs_count,  # Resource counts
-                ec2_cpu, rds_cpu, ecs_cpu,        # Current CPU values
-                ec2_pred/100.0, rds_pred/100.0, ecs_pred/100.0,  # Predicted CPU values (normalized)
-                float(datetime.now().hour),        # Current hour
-                float(datetime.now().weekday())    # Current day of week
-            ])
+            ec2_count, rds_count, ecs_count, 
+            ec2_cpu, rds_cpu, ecs_cpu,      
+            ec2_pred_norm, rds_pred_norm, ecs_pred_norm,  
+            float(datetime.now().hour),       
+            float(datetime.now().weekday())   
+        ])
+            state_history.append(current_state[:3]) 
             
-            # Update state history
-            state_history.append(current_state[:3])  # Only keep resource counts in history
-            
-            # Get discrete state for Q-table lookup (for the updated RL model)
-            # This function comes from RLv5.py
             discrete_state = safe_discretize_state(current_state)
             
-            # Select action based on the Q-table (for the updated RL model)
             actions = rl_model.select_action(current_state)
             
-            # Convert actions to decisions
             ec2_decision = rl_decision_map[actions[0]]
             rds_decision = rl_decision_map[actions[1]]
             ecs_decision = rl_decision_map[actions[2]]
             
             logger.info(f"RL Decisions - EC2: {ec2_decision}, RDS: {rds_decision}, ECS: {ecs_decision}")
 
-            # Execute scaling decisions
-            ec2_result = scale_ec2(ec2_decision)
-            rds_result = scale_rds(rds_decision)
-            ecs_result = scale_ecs(ecs_decision)
+            ec2_result = scale_ec2(ec2_decision, ec2_metrics)
+            rds_result = scale_rds(rds_decision, rds_metrics)
+            ecs_result = scale_ecs(ecs_decision, ecs_metrics)
             
             logger.info(f"Scaling Results - EC2: {ec2_result}, RDS: {rds_result}, ECS: {ecs_result}")
 
-            # Current resource utilization
-            ec2_utilization = ec2_cpu * 100.0 / ec2_count if ec2_count > 0 else 100.0
-            rds_utilization = rds_cpu * 100.0 / (rds_count + 1) if rds_count >= 0 else 100.0
-            ecs_utilization = ecs_cpu * 100.0 / ecs_count if ecs_count > 0 else 100.0
-
-            # Update the dashboard predictions for the UI
             dashboard_predictions = {
                 "timestamp": datetime.now().isoformat(),
-                # Current metrics
-                "EC2_CPU": round(ec2_metrics.get('CPUUtilization', 0.0), 2),
-                "RDS_CPU": round(rds_metrics.get('CPUUtilization', 0.0), 2),
-                "ECS_CPU": round(ecs_metrics.get('CPUUtilization', 0.0), 2),
-                "EC2_MEM": round(ec2_metrics.get('MemoryUtilization', 0.0), 2),
-                "RDS_MEM": round(100.0 - (rds_metrics.get('FreeableMemory', 0.0) / 1000), 2),
-                "ECS_MEM": round(ecs_metrics.get('MemoryUtilization', 0.0), 2),
                 
-                # Current allocations
-                "EC2_Count": int(ec2_count),
-                "RDS_Type": instance_classes[int(rds_count)] if int(rds_count) < len(instance_classes) else "unknown",
-                "ECS_Count": int(ecs_count),
-                
-                # Utilization per resource
-                "EC2_Utilization": round(ec2_utilization, 2),
-                "RDS_Utilization": round(rds_utilization, 2),
-                "ECS_Utilization": round(ecs_utilization, 2),
-                
-                # Predictions
                 "EC2_LSTM_Prediction": round(ec2_pred, 2),
                 "RDS_LSTM_Prediction": round(rds_pred, 2),
                 "ECS_LSTM_Prediction": round(ecs_pred, 2),
                 
-                # Scaling decisions
                 "EC2_RL_Decision": ec2_decision,
                 "RDS_RL_Decision": rds_decision,
-                "ECS_RL_Decision": ecs_decision,
-                
-                # Scaling results
-                "EC2_Scaling_Result": ec2_result,
-                "RDS_Scaling_Result": rds_result,
-                "ECS_Scaling_Result": ecs_result
+                "ECS_RL_Decision": ecs_decision,  
             }
-            
-            # Store monitoring data in database
             try:
                 with sqlite3.connect(DATABASE_PATH) as conn:
                     cursor = conn.cursor()
@@ -1195,24 +1079,10 @@ def monitor_and_scale():
         except Exception as e:
             logger.error(f"Error in monitoring cycle: {str(e)}")
             logger.error(traceback.format_exc())
-            # Continue to next cycle even if there's an error
         
         logger.info(f"Next cycle in {cycle_interval} seconds")
-        remaining_time = cycle_interval
-        try:
-            while remaining_time > 0:
-                minutes, seconds = divmod(remaining_time, 60)
-                print(f"  Next monitoring cycle in {minutes:02d}:{seconds:02d}", end="\r")
-                # Sleep in shorter intervals to allow for more responsive shutdown
-                sleep_interval = min(5, remaining_time)
-                time.sleep(sleep_interval)
-                remaining_time -= sleep_interval
-            print(" " * 50, end="\r")  # Clear the status line
-        except KeyboardInterrupt:
-            print("\nMonitoring interrupted by user. Shutting down...")
-            break
+        time.sleep(cycle_interval)
 
-# Additional API endpoints for manual control and historical data
 @app.route('/history/metrics', methods=['GET'])
 @require_api_key
 def get_historical_metrics():
@@ -1236,7 +1106,6 @@ def get_historical_metrics():
             
             rows = cursor.fetchall()
             
-            # Group by service and metric
             results = {}
             for timestamp, service, metric_name, value in rows:
                 if service not in results:
@@ -1310,29 +1179,20 @@ def reload_models():
         logger.error(traceback.format_exc())
         return jsonify({"status": "error", "message": f"Error: {str(e)}"}), 500
 
-# Create the monitoring thread but don't start it yet
 monitoring_thread = threading.Thread(target=monitor_and_scale, daemon=True)
 
-# Create a shutdown function for graceful termination
 def shutdown_server():
     logger.info("Shutting down server...")
-    # Cleanup code can go here if needed before shutdown
 
-# Main entry point
 if __name__ == '__main__':
-    # Import traceback for better error reporting
-    import traceback
-    
     try:
         create_metrics_table()
         logger.info(f"Starting server on {HOST}:{PORT}")
         
-        # Initialize models before starting monitoring thread
         models_loaded = load_models()
         logger.info(f"Models loaded successfully: {models_loaded}")
         
         if models_loaded:
-            # Start monitoring thread if models loaded successfully
             monitoring_thread.start()
             logger.info("Monitoring thread started")
         else:
