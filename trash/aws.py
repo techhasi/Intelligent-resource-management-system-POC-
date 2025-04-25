@@ -44,10 +44,10 @@ RL_MODEL_PATH = '../models/cloud_dqn.pkl'
 
 # Model Parameters
 SEQUENCE_LENGTH = 24  
-LSTM_HIDDEN_SIZE = 128  
-LSTM_NUM_LAYERS = 2   
+LSTM_HIDDEN_SIZE = 256  
+LSTM_NUM_LAYERS = 3   
 LSTM_DROPOUT = 0.3    
-BINS_PER_DIM = 12      
+BINS_PER_DIM = 8       
 
 # Monitoring Configuration
 MONITORING_INTERVAL = 300 
@@ -142,8 +142,12 @@ class LSTM(nn.Module):
 ec2_lstm_model = None
 rds_lstm_model = None
 ecs_lstm_model = None
-rl_model = None
-rl_scaler = None
+ec2_feature_scaler = None
+ec2_target_scaler = None
+rds_feature_scaler = None
+rds_target_scaler = None
+ecs_feature_scaler = None
+ecs_target_scaler = None
 dashboard_predictions = {}
 state_history = deque(maxlen=3) 
 ec2_sequence_history = deque(maxlen=SEQUENCE_LENGTH)
@@ -151,7 +155,7 @@ rds_sequence_history = deque(maxlen=SEQUENCE_LENGTH)
 ecs_sequence_history = deque(maxlen=SEQUENCE_LENGTH)
 
 def load_models():
-    global ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model
+    global ec2_lstm_model, rds_lstm_model, ecs_lstm_model
     global ec2_feature_scaler, ec2_target_scaler
     global rds_feature_scaler, rds_target_scaler  
     global ecs_feature_scaler, ecs_target_scaler
@@ -248,84 +252,11 @@ def load_models():
             logger.error(traceback.format_exc())
             return False
 
-        
-        with open(RL_MODEL_PATH, 'rb') as f:
-            rl_model_data = pickle.load(f)
-            
-        from collections import defaultdict
-        class EnhancedQAgent:
-            def __init__(self, bins_per_dim=BINS_PER_DIM, action_size_per_service=3, num_services=3):
-                self.bins_per_dim = bins_per_dim
-                self.action_size_per_service = action_size_per_service
-                self.num_services = num_services
-                self.q_table = defaultdict(float)
-                self.epsilon = 0.0 
-            
-            def load_model(self, data):
-                self.q_table = defaultdict(float, data['q_table'])
-                self.epsilon = 0.0 
-                return True
-                
-            def get_q_value(self, state_tuple, service_idx, action):
-                key = (state_tuple, service_idx, action)
-                return self.q_table[key]
-            
-            def select_action(self, state):
-                state_tuple = self.safe_discretize_state(state)
-                actions = {}
-                for i in range(self.num_services):
-                    q_values = [self.get_q_value(state_tuple, i, a) for a in range(3)]
-                    best_action = np.argmax(q_values)
-                    actions[i] = best_action
-                return actions
-            
-            def safe_discretize_state(self, state):
-                discrete_state = []
-                try:
-                    for i in range(3): 
-                        if i < len(state) and not np.isnan(state[i]):
-                            resource_count = min(int(state[i]), 10)
-                            bin_idx = min(int((resource_count - 1) * self.bins_per_dim / 10), self.bins_per_dim - 1)
-                            discrete_state.append(bin_idx)
-                        else:
-                            discrete_state.append(1)
-                    
-                    for i in range(3, 9):
-                        if i < len(state) and not np.isnan(state[i]):
-                            value = max(0.0, min(1.0, state[i]))
-                            bin_idx = min(int(value * self.bins_per_dim), self.bins_per_dim - 1)
-                            discrete_state.append(bin_idx)
-                        else:
-                            discrete_state.append(self.bins_per_dim // 2)
-                    
-                    if len(state) > 9 and not np.isnan(state[9]):
-                        hour = int(state[9]) % 24
-                        time_bin = hour // 6
-                        discrete_state.append(time_bin)
-                    else:
-                        discrete_state.append(2)
-                    
-                    if len(state) > 10 and not np.isnan(state[10]):
-                        day = int(state[10]) % 7
-                        day_bin = 1 if day >= 5 else 0
-                        discrete_state.append(day_bin)
-                    else:
-                        discrete_state.append(0)
-                        
-                except Exception as e:
-                    logger.error(f"Error in discretize_state: {e}")
-                    return tuple([1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0])
-                
-                return tuple(discrete_state)
-            
-        rl_model = EnhancedQAgent()
-        rl_model.load_model(rl_model_data)
-        logger.info("RL model (Q-Agent) loaded successfully")
         logger.info("All models loaded successfully")
         return True
     except Exception as e:
         logger.error(f"Error loading models: {e}")
-        ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model = None, None, None, None
+        ec2_lstm_model, rds_lstm_model, ecs_lstm_model = None, None, None
         return False
 
 # Initialize AWS Clients
@@ -479,10 +410,6 @@ def scale_rds(decision, current_metrics=None, db_instance_id=RDS_INSTANCE_ID):
         return f"Error scaling RDS {db_instance_id}: {str(e)}"
 
 def scale_ecs(decision, current_metrics=None, cluster_name=ECS_CLUSTER_NAME, task_definition=ECS_TASK_DEFINITION):
-    """
-    Scale ECS tasks based on RL decision
-    decision: "scale up", "scale down", or "no change"
-    """
     try:
         cpu_before = current_metrics.get('CPUUtilization', 0.0) if current_metrics else 0.0
         
@@ -836,7 +763,7 @@ def health():
     return jsonify({
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "models_loaded": all([ec2_lstm_model, rds_lstm_model, ecs_lstm_model, rl_model]) 
+        "models_loaded": all([ec2_lstm_model, rds_lstm_model, ecs_lstm_model]) 
     })
 
 @app.route('/predictions', methods=['GET'])
@@ -900,6 +827,15 @@ def api_scale_ecs():
     logger.info(f"Scale ECS result: {result}")
     return jsonify({"message": result})
 
+# Rule-based scaling decision
+def make_scaling_decision(cpu_utilization):
+    if cpu_utilization > 85:
+        return "scale up"
+    elif cpu_utilization < 15:
+        return "scale down"
+    else:
+        return "no change"
+
 # Monitoring Thread 
 def monitor_and_scale():
     global dashboard_predictions, state_history, ec2_sequence_history, rds_sequence_history, ecs_sequence_history
@@ -936,50 +872,6 @@ def monitor_and_scale():
             logger.error(traceback.format_exc())
             return 0.0
 
-    def safe_discretize_state(state):
-        discrete_state = []
-        
-        try:
-            for i in range(3): 
-                if i < len(state) and not np.isnan(state[i]):
-                    resource_count = min(int(state[i]), 10)
-                    bin_idx = min(int((resource_count - 1) * BINS_PER_DIM / 10), BINS_PER_DIM - 1)
-                    discrete_state.append(bin_idx)
-                else:
-                    discrete_state.append(1) 
-            
-            for i in range(3, 9): 
-                if i < len(state) and not np.isnan(state[i]):
-                    value = max(0.0, min(1.0, state[i]))
-                    bin_idx = min(int(value * BINS_PER_DIM), BINS_PER_DIM - 1)
-                    discrete_state.append(bin_idx)
-                else:
-                    discrete_state.append(BINS_PER_DIM // 2)
-            
-            if len(state) > 9 and not np.isnan(state[9]):
-                hour = int(state[9]) % 24
-                time_bin = hour // 6
-                discrete_state.append(time_bin)
-            else:
-                discrete_state.append(2)
-            
-            if len(state) > 10 and not np.isnan(state[10]):
-                day = int(state[10]) % 7
-                day_bin = 1 if day >= 5 else 0
-                discrete_state.append(day_bin)
-            else:
-                discrete_state.append(0)
-                
-        except Exception as e:
-            logger.error(f"Error in discretize_state: {e}")
-            logger.error(traceback.format_exc())
-            return tuple([1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0])
-        
-        return tuple(discrete_state)
-
-    rl_decision_map = {0: "scale down", 1: "no change", 2: "scale up"}
-    cycle_interval = MONITORING_INTERVAL
-
     state_history.extend([np.array([0.0, 0.0, 0.0])] * 3)
     
     ec2_sequence_history.extend([[0.0] * 13] * SEQUENCE_LENGTH) 
@@ -1003,46 +895,10 @@ def monitor_and_scale():
             
             logger.info(f"LSTM Predictions - EC2: {ec2_pred:.2f}, RDS: {rds_pred:.2f}, ECS: {ecs_pred:.2f}")
 
-            try:
-                ec2_response = autoscaling_client.describe_auto_scaling_groups(AutoScalingGroupNames=[EC2_ASG_NAME])
-                ec2_count = float(ec2_response['AutoScalingGroups'][0]['DesiredCapacity'])
-                
-                rds_response = rds_client.describe_db_instances(DBInstanceIdentifier=RDS_INSTANCE_ID)
-                current_class = rds_response['DBInstances'][0]['DBInstanceClass']
-                instance_classes = ['db.t3.micro', 'db.t3.small', 'db.t3.medium', 'db.t3.large', 'db.r5.large']
-                rds_count = float(instance_classes.index(current_class) if current_class in instance_classes else 0)
-                
-                ecs_response = ecs_client.list_tasks(cluster=ECS_CLUSTER_NAME, desiredStatus='RUNNING')
-                ecs_count = float(len(ecs_response['taskArns']))
-            except Exception as e:
-                logger.error(f"Error getting resource counts: {e}")
-                logger.error(traceback.format_exc())
-                ec2_count, rds_count, ecs_count = 2.0, 1.0, 2.0
-            
-            ec2_cpu = float(ec2_metrics.get('CPUUtilization', 0.0)) / 100.0
-            rds_cpu = float(rds_metrics.get('CPUUtilization', 0.0)) / 100.0
-            ecs_cpu = float(ecs_metrics.get('CPUUtilization', 0.0)) / 100.0
-            
-            ec2_pred_norm = min(1.0, max(0.0, ec2_pred/100.0))
-            rds_pred_norm = min(1.0, max(0.0, rds_pred/100.0))
-            ecs_pred_norm = min(1.0, max(0.0, ecs_pred/100.0))
-            
-            current_state = np.array([
-            ec2_count, rds_count, ecs_count, 
-            ec2_cpu, rds_cpu, ecs_cpu,      
-            ec2_pred_norm, rds_pred_norm, ecs_pred_norm,  
-            float(datetime.now().hour),       
-            float(datetime.now().weekday())   
-        ])
-            state_history.append(current_state[:3]) 
-            
-            discrete_state = safe_discretize_state(current_state)
-            
-            actions = rl_model.select_action(current_state)
-            
-            ec2_decision = rl_decision_map[actions[0]]
-            rds_decision = rl_decision_map[actions[1]]
-            ecs_decision = rl_decision_map[actions[2]]
+            # Make rule-based scaling decisions
+            ec2_decision = make_scaling_decision(ec2_metrics.get('CPUUtilization', 0.0))
+            rds_decision = make_scaling_decision(rds_metrics.get('CPUUtilization', 0.0))
+            ecs_decision = make_scaling_decision(ecs_metrics.get('CPUUtilization', 0.0))
             
             logger.info(f"RL Decisions - EC2: {ec2_decision}, RDS: {rds_decision}, ECS: {ecs_decision}")
 
@@ -1059,9 +915,13 @@ def monitor_and_scale():
                 "RDS_LSTM_Prediction": round(rds_pred, 2),
                 "ECS_LSTM_Prediction": round(ecs_pred, 2),
                 
-                "EC2_RL_Decision": ec2_decision,
-                "RDS_RL_Decision": rds_decision,
-                "ECS_RL_Decision": ecs_decision,  
+                "EC2_CPU": round(ec2_metrics.get('CPUUtilization', 0.0), 2),
+                "RDS_CPU": round(rds_metrics.get('CPUUtilization', 0.0), 2),
+                "ECS_CPU": round(ecs_metrics.get('CPUUtilization', 0.0), 2),
+                
+                "EC2_Decision": ec2_decision,
+                "RDS_Decision": rds_decision,
+                "ECS_Decision": ecs_decision,  
             }
             try:
                 with sqlite3.connect(DATABASE_PATH) as conn:
@@ -1080,8 +940,8 @@ def monitor_and_scale():
             logger.error(f"Error in monitoring cycle: {str(e)}")
             logger.error(traceback.format_exc())
         
-        logger.info(f"Next cycle in {cycle_interval} seconds")
-        time.sleep(cycle_interval)
+        logger.info(f"Next cycle in {MONITORING_INTERVAL} seconds")
+        time.sleep(MONITORING_INTERVAL)
 
 @app.route('/history/metrics', methods=['GET'])
 @require_api_key
