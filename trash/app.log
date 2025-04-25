@@ -1,0 +1,41 @@
+2025-04-23 11:54:46,461 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-04-23 11:54:46,650 - INFO - AWS clients initialized successfully
+2025-04-23 11:54:46,653 - INFO - Database tables initialized successfully
+2025-04-23 11:54:46,653 - INFO - Starting server on 0.0.0.0:5002
+2025-04-23 11:54:46,653 - INFO - Starting model loading process...
+2025-04-23 11:54:46,653 - INFO - Loading EC2 model from ../models/ec2_lstm_model.pth
+2025-04-23 11:54:46,665 - INFO - EC2 model loaded. Architecture: input_size=14, hidden_size=128, num_layers=2, dropout=0.3
+2025-04-23 11:54:46,698 - INFO - EC2 model initialized and set to eval mode
+2025-04-23 11:54:46,698 - INFO - Loading RDS model from ../models/rds_lstm_model.pth
+2025-04-23 11:54:46,701 - INFO - RDS model loaded. Architecture: input_size=17, hidden_size=128, num_layers=2, dropout=0.3
+2025-04-23 11:54:46,707 - INFO - RDS model initialized and set to eval mode
+2025-04-23 11:54:46,707 - INFO - Loading ECS model from ../models/ecs_lstm_model.pth
+2025-04-23 11:54:46,712 - INFO - ECS model loaded. Architecture: input_size=18, hidden_size=128, num_layers=2, dropout=0.3
+2025-04-23 11:54:46,717 - INFO - ECS model initialized and set to eval mode
+2025-04-23 11:54:46,717 - INFO - Loading feature scalers...
+2025-04-23 11:54:46,717 - INFO - Loading EC2 scalers from ../models/ec2_lstm_model_scalers.pkl
+2025-04-23 11:54:48,597 - INFO - EC2 scalers loaded successfully
+2025-04-23 11:54:48,597 - INFO - Loading RDS scalers from ../models/rds_lstm_model_scalers.pkl
+2025-04-23 11:54:48,597 - INFO - RDS scalers loaded successfully
+2025-04-23 11:54:48,597 - INFO - Loading ECS scalers from ../models/ecs_lstm_model_scalers.pkl
+2025-04-23 11:54:48,598 - INFO - ECS scalers loaded successfully
+2025-04-23 11:54:48,598 - INFO - All models loaded successfully
+2025-04-23 11:54:48,598 - INFO - Models loaded successfully: True
+2025-04-23 11:54:48,598 - INFO - Starting monitoring cycle...
+2025-04-23 11:54:48,598 - INFO - Monitoring thread started
+2025-04-23 11:54:48,626 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://10.83.57.119:5002
+2025-04-23 11:54:48,626 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 11:54:49,631 - INFO - EC2 metrics fetched: {'CPUUtilization': 0.0, 'DiskWriteOps': 0.0, 'NetworkIn': 0.0, 'MemoryUtilization': 14.576245037335692}
+2025-04-23 11:54:49,876 - INFO - RDS metrics fetched: {'CPUUtilization': 3.5334330564211434, 'FreeableMemory': 140927795.2, 'DatabaseConnections': 0.0, 'WriteIOPS': 0.6266864199686429}
+2025-04-23 11:54:50,750 - INFO - ECS metrics fetched: {'CpuUtilized': 0.0, 'MemoryUtilized': 0.0, 'CPUUtilization': 0.0, 'MemoryUtilization': 0.0, 'RunningTaskCount': 0.0, 'NetworkRxBytes': 0.0, 'NetworkTxBytes': 0.0}
+2025-04-23 11:54:50,754 - INFO - LSTM Predictions - EC2: 0.00, RDS: 3.89, ECS: 0.00
+2025-04-23 11:54:50,754 - INFO - RL Decisions - EC2: scale down, RDS: scale down, ECS: scale down
+2025-04-23 11:54:51,194 - INFO - No scaling action for EC2 ASG ec2-scaling
+2025-04-23 11:54:51,675 - INFO - No scaling action for RDS database-2
+2025-04-23 11:54:51,750 - INFO - No scaling action for cluster my-ecs-cluster
+2025-04-23 11:54:51,752 - INFO - Scaling Results - EC2: No scaling action for EC2 ASG ec2-scaling, RDS: No scaling action for RDS database-2, ECS: No scaling action for cluster my-ecs-cluster
+2025-04-23 11:54:51,754 - INFO - Dashboard updated with latest predictions and decisions
+2025-04-23 11:54:51,754 - INFO - Next cycle in 300 seconds
