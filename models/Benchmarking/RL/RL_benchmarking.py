@@ -9,7 +9,7 @@ from collections import defaultdict
 
 # Import RL components - modify these imports based on your actual module structure
 import sys
-sys.path.append('/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/')
+sys.path.append('/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/LSTMv5/')
 from RLv6 import EnhancedQAgent, EnhancedCloudEnvironment, rule_based_action
 
 # Set random seeds for reproducibility
@@ -20,12 +20,12 @@ def benchmark_rl_model():
     """Benchmark RL model against a rule-based baseline"""
     
     # Define model and data paths
-    rl_model_path = '../../cloud_dqn.pkl'
+    rl_model_path = '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/models/cloud_dqn.pkl'
     
     data_paths = {
-        'ec2': '../../../dataset scripts/reduced_ec2_data.csv',
-        'rds': '../../../dataset scripts/reduced_rds_data.csv',
-        'ecs': '../../../dataset scripts/reduced_ecs_data.csv'
+        'ec2': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/dataset scripts/reduced_ec2_data.csv',
+        'rds': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/dataset scripts/reduced_rds_data.csv',
+        'ecs': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/dataset scripts/reduced_ecs_data.csv'
     }
     
     print("Starting RL model benchmarking...")

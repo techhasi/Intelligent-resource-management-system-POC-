@@ -9,7 +9,7 @@ import pickle
 # Import necessary classes from your LSTM module
 import sys
 sys.path.append('/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/main scripts/')
-from LSTMv5 import AttentionLSTM
+from LSTMv6 import LSTM
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -20,15 +20,15 @@ def benchmark_lstm_models():
     
     # Define model and data paths
     model_paths = {
-        'ec2': '../../../models/LSTMv5/ec2_lstm_model_improved.pth',
-        'rds': '../../../models/LSTMv5/rds_lstm_model_improved.pth',
-        'ecs': '../../../models/LSTMv5/ecs_lstm_model_improved.pth'
+        'ec2': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/models/ec2_lstm_model.pth',
+        'rds': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/models/rds_lstm_model.pth',
+        'ecs': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/models/ecs_lstm_model.pth'
     }
     
     test_data_paths = {
-        'ec2': '../../../dataset scripts/reduced_ec2_data.csv',
-        'rds': '../../../dataset scripts/reduced_rds_data.csv',
-        'ecs': '../../../dataset scripts/reduced_ecs_data.csv'
+        'ec2': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/dataset scripts/reduced_ec2_data.csv',
+        'rds': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/dataset scripts/reduced_rds_data.csv',
+        'ecs': '/Users/hwimalasooriya/Documents/GitHub/Intelligent-resource-management-system-POC-/dataset scripts/reduced_ecs_data.csv'
     }
     
     all_results = {}
